@@ -9,7 +9,7 @@ window.Ephedrine = {
     processCode: code => {},
     msgAsync: (action, arg1, arg2, arg3, arg4, arg5) => {
         return new Promise(resolve => {
-            request(action, arg1, arg2, arg3, arg4, arg5);
+            Ephedrine.request(action, arg1, arg2, arg3, arg4, arg5);
             Ephedrine.processCode = code => {
                 resolve(code);
             }

@@ -22,7 +22,7 @@ Class MainWindow
         Progress.Value = 10
         MainWeb.CoreWebView2.Settings.IsStatusBarEnabled = False
         Status.Content = "Loading Web Page..."
-        MainWeb.CoreWebView2.Navigate("https://glacier.qinlili.bid")
+        MainWeb.CoreWebView2.Navigate("http://127.0.0.1:8082")
     End Sub
 
 
@@ -41,6 +41,7 @@ Class MainWindow
 
     Private Sub MainWeb_WebMessageReceived(sender As Object, e As CoreWebView2WebMessageReceivedEventArgs) Handles MainWeb.WebMessageReceived
         If Not IsBusy Then
+            MsgBox("")
             Dim Message = JsonSerializer.Deserialize(Of JSONFormat)(e.WebMessageAsJson)
             Progress.Value = 0
             IsBusy = True
@@ -77,7 +78,7 @@ Class MainWindow
                             '91 Start Success
                             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(91)")
                         Else
-                            MsgBox("Fail to start service. Check if antivirus software stop it.")
+                            MsgBox("Fail to start service. Check if antivirus software stop it.",, "Error")
                             '90 Start Fail
                             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(90)")
                         End If
@@ -85,8 +86,8 @@ Class MainWindow
                         '93 Duplicate Service
                         MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(93)")
                     End If
-
                     Status.Content = "Ready."
+                    Progress.Value = 100
                     Progress.IsIndeterminate = False
                     IsBusy = False
             End Select
