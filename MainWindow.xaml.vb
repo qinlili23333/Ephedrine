@@ -1,6 +1,8 @@
 ﻿Imports Microsoft.Web.WebView2.Core
 Imports System.Text.Json
 Imports System.Net
+Imports System.IO.Compression
+Imports System.IO
 
 Class MainWindow
     Class JSONFormat
@@ -100,19 +102,63 @@ Class MainWindow
     End Sub
 
     'Download and install zip file
-    Private Async Sub InstallZip(link As String, location As String)
+    Dim Location As String
+    Private Sub InstallZip(link As String, loc As String)
         Status.Content = "Downloading Patch File..."
+        If File.Exists("QinliliPatch.zip") Then
+            Try
+                File.Delete("QinliliPatch.zip")
+            Catch ex As Exception
+                MsgBox("Failed to delete unused patch file. Please try to delete 'QinliliPatch.zip' manually and continue.",, "Error")
+            End Try
+        End If
         Dim DownloadClient As New WebClient
         AddHandler DownloadClient.DownloadProgressChanged, AddressOf ShowDownProgress
         AddHandler DownloadClient.DownloadFileCompleted, AddressOf DownloadFileCompleted
         DownloadClient.DownloadFileAsync(New Uri(link), "QinliliPatch.zip")
         Progress.IsIndeterminate = False
+        If loc = "Here" Then
+            Location = ".\"
+        Else
+            Location = loc
+        End If
     End Sub
     Private Sub ShowDownProgress(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs)
         Progress.Value = e.ProgressPercentage * 0.7
     End Sub
     Private Sub DownloadFileCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.AsyncCompletedEventArgs)
-        MsgBox("Success")
         Status.Content = "Extracting Patch File..."
+        Dim archive As ZipArchive
+        Try
+            archive = ZipFile.OpenRead("QinliliPatch.zip")
+        Catch
+            MsgBox("Failed to open patch file. Check your internet connection or contact with patch creator.",, "Error")
+            '10 Corrupt Patch
+            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(10)")
+            Progress.Value = 100
+            Status.Content = "Installation Failed : Corrupt Patch."
+            IsBusy = False
+            Exit Sub
+        End Try
+        Try
+            archive.ExtractToDirectory(Location, True)
+            Progress.Value = 90
+            Status.Content = "Cleaning..."
+            archive.Dispose()
+            If File.Exists("QinliliPatch.zip") Then
+                Try
+                    File.Delete("QinliliPatch.zip")
+                Catch ex As Exception
+                    MsgBox("Failed to delete unused patch file. Please try to delete 'QinliliPatch.zip' manually.",, "Error")
+                End Try
+            End If
+            Progress.Value = 100
+            Status.Content = "Success Installed Patch."
+            '11 Success Zip Patch
+            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(11)")
+            IsBusy = False
+        Catch ex As Exception
+
+        End Try
     End Sub
 End Class
