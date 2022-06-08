@@ -11,7 +11,7 @@
 
         <Wpf:WebView2 x:Name="MainWeb" Source="https://gen2.qinlili.bid" Margin="0,15,0,0"/>
         <ProgressBar x:Name="Progress" Height="15" VerticalAlignment="Top" IsIndeterminate="True" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FFED98FF" Panel.ZIndex="1"/>
-        <Label x:Name="Status" Content="Initializing core service..." HorizontalAlignment="Stretch" VerticalAlignment="Top" MaxHeight="15" FontFamily="Cascadia Code" FontWeight="Normal" Padding="5,0,5,0" FontSize="13" Panel.ZIndex="3"/>
+        <Label x:Name="Status" Content="Initializing..." HorizontalAlignment="Stretch" VerticalAlignment="Top" MaxHeight="15" FontFamily="Cascadia Code" FontWeight="Normal" Padding="5,0,5,0" FontSize="13" Panel.ZIndex="3"/>
 
     </Grid>
 </Window>

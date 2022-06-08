@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+
+<head>
+    <script src="./EphedrineSDK.js"></script>
+</head>
+
+<body>
+    <Button onclick="startService();">Start Service</Button>
+    <script>
+        const startService = async() => {
+            await Ephedrine.Actions.StartService();
+        }
+    </script>
+</body>

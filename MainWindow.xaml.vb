@@ -46,10 +46,19 @@ Class MainWindow
             IsBusy = True
             Progress.IsIndeterminate = True
             Status.Content = "Processing..."
-            Select Case (Message.Action)
+            Select Case Message.Action
                 'Action 1
                 Case "Install"
-                    MsgBox("Pending Install:" + Message.Arg1)
+                    Dim Method As String = Message.Arg1
+                    Dim Link As String = Message.Arg2
+                    Dim Location As String = Message.Arg3
+                    Select Case Message.Arg1
+                        'Extract only
+                        Case "zip"
+                        'No exctract and directly run
+                        Case "run"
+
+                    End Select
                 'Action 3
                 Case "Prepare"
                     MsgBox("Pending Install Depending Module:" + Message.Arg1)
@@ -66,15 +75,15 @@ Class MainWindow
                         Service = Process.Start(Environment.ProcessPath, "--service")
                         If Service IsNot Nothing Then
                             '91 Start Success
-                            MainWeb.CoreWebView2.ExecuteScriptAsync("msgStatus(91)")
+                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(91)")
                         Else
                             MsgBox("Fail to start service. Check if antivirus software stop it.")
                             '90 Start Fail
-                            MainWeb.CoreWebView2.ExecuteScriptAsync("msgStatus(90)")
+                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(90)")
                         End If
                     Else
                         '93 Duplicate Service
-                        MainWeb.CoreWebView2.ExecuteScriptAsync("msgStatus(93)")
+                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(93)")
                     End If
 
                     Status.Content = "Ready."
@@ -83,7 +92,7 @@ Class MainWindow
             End Select
         Else
             '-1 Busy
-            MainWeb.CoreWebView2.ExecuteScriptAsync("msgStatus(-1)")
+            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(-1)")
         End If
     End Sub
 End Class
