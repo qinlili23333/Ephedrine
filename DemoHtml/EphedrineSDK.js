@@ -59,6 +59,22 @@ window.Ephedrine = {
                         break;
                     }
             }
+        },
+        Install: {
+            zip: async(link, location) => {
+                switch (await Ephedrine.msgAsync("Install", "zip", link, location)) {
+                    case -1:
+                        {
+                            //Busy
+                            return {
+                                success: false,
+                                running: false,
+                                msg: "Client Busy"
+                            }
+                            break;
+                        };
+                }
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿Imports Microsoft.Web.WebView2.Core
 Imports System.Text.Json
+Imports System.Net
 
 Class MainWindow
     Class JSONFormat
@@ -56,6 +57,7 @@ Class MainWindow
                     Select Case Message.Arg1
                         'Extract only
                         Case "zip"
+                            InstallZip(Link, Location)
                         'No exctract and directly run
                         Case "run"
 
@@ -95,5 +97,22 @@ Class MainWindow
             '-1 Busy
             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(-1)")
         End If
+    End Sub
+
+    'Download and install zip file
+    Private Async Sub InstallZip(link As String, location As String)
+        Status.Content = "Downloading Patch File..."
+        Dim DownloadClient As New WebClient
+        AddHandler DownloadClient.DownloadProgressChanged, AddressOf ShowDownProgress
+        AddHandler DownloadClient.DownloadFileCompleted, AddressOf DownloadFileCompleted
+        DownloadClient.DownloadFileAsync(New Uri(link), "QinliliPatch.zip")
+        Progress.IsIndeterminate = False
+    End Sub
+    Private Sub ShowDownProgress(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs)
+        Progress.Value = e.ProgressPercentage * 0.7
+    End Sub
+    Private Sub DownloadFileCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.AsyncCompletedEventArgs)
+        MsgBox("Success")
+        Status.Content = "Extracting Patch File..."
     End Sub
 End Class
