@@ -51,7 +51,6 @@ Class MainWindow
 
     Private Sub MainWeb_WebMessageReceived(sender As Object, e As CoreWebView2WebMessageReceivedEventArgs) Handles MainWeb.WebMessageReceived
         If Not IsBusy Then
-            MsgBox("")
             Dim Message = JsonSerializer.Deserialize(Of JSONFormat)(e.WebMessageAsJson)
             Progress.Value = 0
             IsBusy = True
@@ -76,6 +75,7 @@ Class MainWindow
                     MsgBox("Pending Install Depending Module:" + Message.Arg1)
                 'Action 9
                 Case "StartService"
+                    MsgBox(Message.Arg1)
                     'Detect if service died
                     If Service IsNot Nothing Then
                         If Service.HasExited Then
@@ -84,7 +84,15 @@ Class MainWindow
                     End If
                     If Service Is Nothing Then
                         Status.Content = "Starting Service..."
-                        Service = Process.Start(Environment.ProcessPath, "--service")
+                        Select Case Message.Arg1
+                            Case "User"
+                                Service = Process.Start(Environment.ProcessPath, "--service")
+                            Case "Admin"
+                                Dim info As ProcessStartInfo = New ProcessStartInfo(Environment.ProcessPath, "--service")
+                                info.UseShellExecute = True
+                                info.Verb = "runas"
+                                Service = Process.Start(info)
+                        End Select
                         If Service IsNot Nothing Then
                             '91 Start Success
                             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(91)")
@@ -165,7 +173,7 @@ Class MainWindow
             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(11)")
             IsBusy = False
         Catch ex As Exception
-
+            MsgBox(ex.Message)
         End Try
     End Sub
 End Class

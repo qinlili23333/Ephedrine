@@ -16,12 +16,13 @@ window.Ephedrine = {
         })
     },
     Actions: {
-        StartService: async() => {
-            switch (await Ephedrine.msgAsync("StartService")) {
+        StartService: async(elevated) => {
+            switch (await Ephedrine.msgAsync("StartService", elevated ? "Admin" : "User")) {
                 case -1:
                     {
                         //Busy
                         return {
+                            code: -1,
                             success: false,
                             running: false,
                             msg: "Client Busy"
@@ -32,6 +33,7 @@ window.Ephedrine = {
                     {
                         //Start Fail 
                         return {
+                            code: 90,
                             success: false,
                             running: false,
                             msg: "Fail"
@@ -42,6 +44,7 @@ window.Ephedrine = {
                     {
                         //Start Success 
                         return {
+                            code: 91,
                             success: true,
                             running: true,
                             msg: "Success"
@@ -52,6 +55,7 @@ window.Ephedrine = {
                     {
                         //Start Fail 
                         return {
+                            code: 93,
                             success: false,
                             running: true,
                             msg: "Already Running"
@@ -67,12 +71,22 @@ window.Ephedrine = {
                         {
                             //Busy
                             return {
+                                code: -1,
                                 success: false,
-                                running: false,
                                 msg: "Client Busy"
                             }
                             break;
                         };
+                    case 11:
+                        {
+                            //Success Zip Patch
+                            return {
+                                code: 11,
+                                success: true,
+                                msg: "Success"
+                            }
+                            break;
+                        }
                 }
             }
         }

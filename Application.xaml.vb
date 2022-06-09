@@ -18,6 +18,8 @@ Public Class Application
             Tray.ContextMenuStrip = MainMenu
             MainMenu.Items.AddRange(New ToolStripItem() {mnuExit})
             Tray.Visible = True
+        ElseIf Command() = "--unzip" Then
+
         Else
             StartupUri = New System.Uri("MainWindow.xaml", System.UriKind.Relative)
         End If

@@ -5,11 +5,15 @@
 </head>
 
 <body>
-    <Button onclick="startService();">Start Service</Button>
+    <Button onclick="startService();">Start User Service</Button>
+    <Button onclick="startServiceAdmin();">Start Admin Service</Button>
     <Button onclick="install()">Install FFMPEG</Button>
     <script>
         const startService = async() => {
-            await Ephedrine.Actions.StartService();
+            await Ephedrine.Actions.StartService(false);
+        }
+        const startServiceAdmin = async() => {
+            await Ephedrine.Actions.StartService(true);
         }
         const install = async() => {
             await Ephedrine.Actions.Install.zip("https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n5.0-latest-win64-lgpl-shared-5.0.zip", "Here")
