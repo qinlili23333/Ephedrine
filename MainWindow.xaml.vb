@@ -3,6 +3,7 @@ Imports System.Text.Json
 Imports System.Net
 Imports System.IO.Compression
 Imports System.IO
+Imports System.Reflection
 
 Class MainWindow
     Class JSONFormat
@@ -15,11 +16,17 @@ Class MainWindow
     End Class
     Dim IsBusy As Boolean = False
     Dim Service As Process
-    Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        LoadAsync()
-    End Sub
-    Private Async Sub LoadAsync()
+    Private Async Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         Status.Content = "Loading WebView2..."
+        If Not File.Exists("WebView2Loader.dll") Then
+            Dim fs As New FileStream("WebView2Loader.dll", FileMode.Create)
+            Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.WebView2Loader.dll").CopyTo(fs)
+            fs.Close()
+            fs.Dispose()
+        End If
+        Directory.CreateDirectory(Path.GetTempPath + "QinliliWebview2\")
+        Environment.SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", Path.GetTempPath + "QinliliWebview2\")
+        Dim webView2Environment = Await CoreWebView2Environment.CreateAsync(, Path.GetTempPath + "QinliliWebview2\Cache",)
         Await MainWeb.EnsureCoreWebView2Async()
         Progress.IsIndeterminate = False
         Progress.Value = 10

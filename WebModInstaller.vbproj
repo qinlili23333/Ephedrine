@@ -22,10 +22,12 @@
 
   <ItemGroup>
     <None Remove="drivers.ico" />
+    <None Remove="WebView2Loader.dll" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="drivers.ico" />
+    <EmbeddedResource Include="WebView2Loader.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1210.39" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1248-prerelease" />
   </ItemGroup>
 
 </Project>
