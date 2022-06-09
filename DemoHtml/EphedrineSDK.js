@@ -77,6 +77,16 @@ window.Ephedrine = {
                             }
                             break;
                         };
+                    case 10:
+                        {
+                            //Zip Patch Fail
+                            return {
+                                code: 10,
+                                success: false,
+                                msg: "Success"
+                            }
+                            break;
+                        };
                     case 11:
                         {
                             //Success Zip Patch
@@ -84,6 +94,16 @@ window.Ephedrine = {
                                 code: 11,
                                 success: true,
                                 msg: "Success"
+                            }
+                            break;
+                        };
+                    case 13:
+                        {
+                            //Zip Patch Permission Denied
+                            return {
+                                code: 13,
+                                success: false,
+                                msg: "Permission Denied"
                             }
                             break;
                         }
