@@ -73,6 +73,24 @@ Class MainWindow
                 'Action 3
                 Case "Prepare"
                     MsgBox("Pending Install Depending Module:" + Message.Arg1)
+                'Action 7
+                Case "KillProcess"
+                    Dim Proc = Process.GetProcessesByName(Message.Arg1)
+                    If Proc.Length > 0 Then
+                        For Each ToKill In Proc
+                            ToKill.Kill()
+                        Next
+                        Status.Content = "Kill Process Success."
+                        '71 Kill Success
+                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(71)")
+                    Else
+                        Status.Content = "No Process Found."
+                        '70 Nothing To Kill
+                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(70)")
+                    End If
+                    Progress.Value = 100
+                    Progress.IsIndeterminate = False
+                    IsBusy = False
                 'Action 9
                 Case "StartService"
                     MsgBox(Message.Arg1)

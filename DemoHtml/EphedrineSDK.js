@@ -109,6 +109,43 @@ window.Ephedrine = {
                         }
                 }
             }
+        },
+        KillProcess: async(name) => {
+            switch (await Ephedrine.msgAsync("KillProcess", name.replace(".exe", ""))) {
+                case -1:
+                    {
+                        //Busy
+                        return {
+                            code: -1,
+                            success: false,
+                            msg: "Client Busy"
+                        }
+                        break;
+                    };
+                case 70:
+                    {
+                        //Nothing To Kill 
+                        return {
+                            code: 70,
+                            success: false,
+                            running: false,
+                            msg: "Nothing Found"
+                        }
+                        break;
+                    };
+                case 71:
+                    {
+                        //Kill Success 
+                        return {
+                            code: 71,
+                            success: true,
+                            running: false,
+                            msg: "Success"
+                        }
+                        break;
+                    }
+
+            }
         }
     }
 }
