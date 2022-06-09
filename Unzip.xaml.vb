@@ -5,6 +5,9 @@ Public Class Unzip
     Private ExtractPath As String
 
     Private Async Sub Unzip_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+        Dim desktopWorkingArea = System.Windows.SystemParameters.WorkArea
+        Left = desktopWorkingArea.Right - Width
+        Top = desktopWorkingArea.Bottom - Height
         If File.Exists("QinliliPatch.zip") And File.Exists("InstallLocation") Then
             Using sr As New StreamReader("InstallLocation")
                 ExtractPath = Await sr.ReadToEndAsync()

@@ -1,9 +1,9 @@
-﻿Imports Microsoft.Web.WebView2.Core
-Imports System.Text.Json
-Imports System.Net
+﻿Imports System.IO
 Imports System.IO.Compression
-Imports System.IO
+Imports System.Net
 Imports System.Reflection
+Imports System.Text.Json
+Imports Microsoft.Web.WebView2.Core
 
 Class MainWindow
     Class JSONFormat
@@ -88,9 +88,10 @@ Class MainWindow
                             Case "User"
                                 Service = Process.Start(Environment.ProcessPath, "--service")
                             Case "Admin"
-                                Dim info As ProcessStartInfo = New ProcessStartInfo(Environment.ProcessPath, "--service")
-                                info.UseShellExecute = True
-                                info.Verb = "runas"
+                                Dim info As New ProcessStartInfo(Environment.ProcessPath, "--service") With {
+                                    .UseShellExecute = True,
+                                    .Verb = "runas"
+                                }
                                 Try
                                     Service = Process.Start(info)
                                 Catch ex As Exception
@@ -191,55 +192,56 @@ Class MainWindow
             If ex.Message.Contains("denied.") Then
                 archive.Dispose()
                 File.WriteAllText("InstallLocation", Location)
-                Dim info As ProcessStartInfo = New ProcessStartInfo(Environment.ProcessPath, "--unzip")
-                info.UseShellExecute = True
-                info.Verb = "runas"
+                Dim info As New ProcessStartInfo(Environment.ProcessPath, "--unzip") With {
+                    .UseShellExecute = True,
+                    .Verb = "runas"
+                }
                 Try
                     Dim ZipProgress = Process.Start(info)
                     ZipProgress.EnableRaisingEvents = True
                     AddHandler ZipProgress.Exited, Sub()
-                                                       Me.Dispatcher.Invoke(Sub()
-                                                                                If File.Exists("QinliliPatch.zip") Then
-                                                                                    Try
-                                                                                        File.Delete("QinliliPatch.zip")
-                                                                                    Catch ex2 As Exception
-                                                                                        MsgBox("Failed to delete unused patch file. Please try to delete 'QinliliPatch.zip' manually.",, "Error")
-                                                                                    End Try
-                                                                                End If
-                                                                                If File.Exists("InstallLocation") Then
-                                                                                    Try
-                                                                                        File.Delete("InstallLocation")
-                                                                                    Catch ex2 As Exception
-                                                                                        MsgBox("Failed to delete unused patch file. Please try to delete 'InstallLocation' manually.",, "Error")
-                                                                                    End Try
-                                                                                End If
-                                                                                Select Case ZipProgress.ExitCode
-                                                                                    Case -1
-                                                                                        Status.Content = "Failed To Installed Patch."
-                                                                                        '10 Zip Patch Fail
-                                                                                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(10)")
-                                                                                    Case 1
-                                                                                        Status.Content = "Success Installed Patch."
-                                                                                        '11 Success Zip Patch
-                                                                                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(11)")
-                                                                                End Select
-                                                                                Progress.Value = 100
-                                                                                IsBusy = False
-                                                                            End Sub)
+                                                       Dispatcher.Invoke(Sub()
+                                                                             If File.Exists("QinliliPatch.zip") Then
+                                                                                 Try
+                                                                                     File.Delete("QinliliPatch.zip")
+                                                                                 Catch ex2 As Exception
+                                                                                     MsgBox("Failed to delete unused patch file. Please try to delete 'QinliliPatch.zip' manually.",, "Error")
+                                                                                 End Try
+                                                                             End If
+                                                                             If File.Exists("InstallLocation") Then
+                                                                                 Try
+                                                                                     File.Delete("InstallLocation")
+                                                                                 Catch ex2 As Exception
+                                                                                     MsgBox("Failed to delete unused patch file. Please try to delete 'InstallLocation' manually.",, "Error")
+                                                                                 End Try
+                                                                             End If
+                                                                             Select Case ZipProgress.ExitCode
+                                                                                 Case -1
+                                                                                     Status.Content = "Failed To Installed Patch."
+                                                                                     '10 Zip Patch Fail
+                                                                                     MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(10)")
+                                                                                 Case 1
+                                                                                     Status.Content = "Success Installed Patch."
+                                                                                     '11 Success Zip Patch
+                                                                                     MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(11)")
+                                                                             End Select
+                                                                             Progress.Value = 100
+                                                                             IsBusy = False
+                                                                         End Sub)
                                                    End Sub
                 Catch ex2 As Exception
                     MsgBox("Permission denied for temporary elevating. Please run installer as administrator and try again.",, "Error")
                     If File.Exists("QinliliPatch.zip") Then
                         Try
                             File.Delete("QinliliPatch.zip")
-                        Catch ex2 As Exception
+                        Catch ex3 As Exception
                             MsgBox("Failed to delete unused patch file. Please try to delete 'QinliliPatch.zip' manually.",, "Error")
                         End Try
                     End If
                     If File.Exists("InstallLocation") Then
                         Try
                             File.Delete("InstallLocation")
-                        Catch ex2 As Exception
+                        Catch ex3 As Exception
                             MsgBox("Failed to delete unused patch file. Please try to delete 'InstallLocation' manually.",, "Error")
                         End Try
                     End If
