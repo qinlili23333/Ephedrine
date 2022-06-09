@@ -108,6 +108,30 @@ window.Ephedrine = {
                             break;
                         }
                 }
+            },
+            save: async(link, name) => {
+                switch (await Ephedrine.msgAsync("Install", "save", link, name)) {
+                    case -1:
+                        {
+                            //Busy
+                            return {
+                                code: -1,
+                                success: false,
+                                msg: "Client Busy"
+                            }
+                            break;
+                        };
+                    case 15:
+                        {
+                            //Download Success Without Verification
+                            return {
+                                code: 15,
+                                success: true,
+                                msg: "Success With No Verification"
+                            }
+                            break;
+                        };
+                }
             }
         },
         KillProcess: async(name) => {

@@ -7,6 +7,7 @@
 <body>
     <Button onclick="startService();">Start User Service</Button>
     <Button onclick="startServiceAdmin();">Start Admin Service</Button>
+    <Button onclick="download()">Download FFMPEG</Button>
     <Button onclick="install()">Install FFMPEG</Button>
     <Button onclick="kill()">Kill GithubDesktop</Button>
     <script>
@@ -15,6 +16,9 @@
         }
         const startServiceAdmin = async() => {
             await Ephedrine.Actions.StartService(true);
+        }
+        const download = async() => {
+            await Ephedrine.Actions.Install.save("https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n5.0-latest-win64-lgpl-shared-5.0.zip", "ffmpeg.zip")
         }
         const install = async() => {
             await Ephedrine.Actions.Install.zip("https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n5.0-latest-win64-lgpl-shared-5.0.zip", "Here")
