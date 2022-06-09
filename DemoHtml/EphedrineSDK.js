@@ -170,6 +170,55 @@ window.Ephedrine = {
                     }
 
             }
-        }
+        },
+        Verify: {
+            MD5: async(file, hash) => {
+                switch (await Ephedrine.msgAsync("Verify", "MD5", file, hash)) {
+                    case -1:
+                        {
+                            //Busy
+                            return {
+                                code: -1,
+                                success: false,
+                                msg: "Client Busy"
+                            }
+                            break;
+                        };
+                    case 82:
+                        {
+                            //MD5 False
+                            return {
+                                code: 82,
+                                success: true,
+                                equal: false,
+                                msg: "Unequal"
+                            }
+                            break;
+                        };
+                    case 81:
+                        {
+                            //MD5 True
+                            return {
+                                code: 81,
+                                success: true,
+                                equal: true,
+                                msg: "Equal"
+                            }
+                            break;
+                        };
+                    case 80:
+                        {
+                            //No File
+                            return {
+                                code: 80,
+                                success: false,
+                                equal: false,
+                                msg: "No Such File"
+                            }
+                            break;
+                        }
+                }
+            },
+        },
     }
 }
