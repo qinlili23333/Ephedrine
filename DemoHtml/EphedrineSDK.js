@@ -3,15 +3,41 @@ window.Ephedrine = {
         console.log(code);
         Ephedrine.processCode(code);
     },
+    msgResult: result => {
+        console.log(result);
+        Ephedrine.processCode(code);
+    },
     request: (action, arg1, arg2, arg3, arg4, arg5) => {
         window.chrome.webview.postMessage({ Action: action, Arg1: arg1, Arg2: arg2, Arg3: arg3, Arg4: arg4, Arg5: arg5 });
     },
     processCode: code => {},
-    msgAsync: (action, arg1, arg2, arg3, arg4, arg5) => {
+    processResult: result => {},
+    msgAsync: (action, arg1, arg2, arg3, arg4, arg5, forResult) => {
         return new Promise(resolve => {
             Ephedrine.request(action, arg1, arg2, arg3, arg4, arg5);
-            Ephedrine.processCode = code => {
-                resolve(code);
+            if (forResult) {
+                let result1 = "";
+                let code1 = 0;
+                const triggerCheck = () => {
+                    if (!(result1 === "") && !(code1 === 0)) {
+                        resolve({
+                            result: result1,
+                            code: code1
+                        })
+                    }
+                }
+                Ephedrine.processResult = result => {
+                    result1 = result;
+                    triggerCheck();
+                }
+                Ephedrine.processCode = code => {
+                    code1 = code;
+                    triggerCheck();
+                }
+            } else {
+                Ephedrine.processCode = code => {
+                    resolve(code);
+                }
             }
         })
     },
@@ -172,37 +198,17 @@ window.Ephedrine = {
             }
         },
         Verify: {
-            MD5: async(file, hash) => {
-                switch (await Ephedrine.msgAsync("Verify", "MD5", file, hash)) {
+            MD5: async(file) => {
+                let result = await Ephedrine.msgAsync("Verify", "MD5", file, null, null, null, true)
+                switch (result.code) {
                     case -1:
                         {
                             //Busy
                             return {
                                 code: -1,
                                 success: false,
+                                result: "",
                                 msg: "Client Busy"
-                            }
-                            break;
-                        };
-                    case 82:
-                        {
-                            //MD5 False
-                            return {
-                                code: 82,
-                                success: true,
-                                equal: false,
-                                msg: "Unequal"
-                            }
-                            break;
-                        };
-                    case 81:
-                        {
-                            //MD5 True
-                            return {
-                                code: 81,
-                                success: true,
-                                equal: true,
-                                msg: "Equal"
                             }
                             break;
                         };
@@ -212,11 +218,22 @@ window.Ephedrine = {
                             return {
                                 code: 80,
                                 success: false,
-                                equal: false,
+                                result: result.result,
                                 msg: "No Such File"
                             }
                             break;
                         }
+                    case 81:
+                        {
+                            //Verify Finish
+                            return {
+                                code: 81,
+                                success: true,
+                                result: "",
+                                msg: "Equal"
+                            }
+                            break;
+                        };
                 }
             },
         },

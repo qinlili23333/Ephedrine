@@ -10,6 +10,7 @@
     <Button onclick="download()">Download FFMPEG</Button>
     <Button onclick="install()">Install FFMPEG</Button>
     <Button onclick="kill()">Kill GithubDesktop</Button>
+    <Button onclick="md5()">Self Verify MD5</Button>
     <script>
         const startService = async() => {
             await Ephedrine.Actions.StartService(false);
@@ -25,6 +26,9 @@
         }
         const kill = async() => {
             await Ephedrine.Actions.KillProcess("GithubDesktop");
+        }
+        const md5 = async() => {
+            await Ephedrine.Actions.Verify.MD5("WebModInstaller.exe")
         }
     </script>
 </body>

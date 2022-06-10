@@ -100,7 +100,7 @@ Class MainWindow
                 Case "Verify"
                     Select Case Message.Arg1
                         Case "MD5"
-                            md5(Message.Arg2, Message.Arg3)
+                            md5(Message.Arg2)
                     End Select
                 'Action 9
                 Case "StartService"
@@ -298,7 +298,7 @@ Class MainWindow
         DownloadClient.DownloadFileAsync(New Uri(link), name)
     End Sub
 
-    Async Sub md5(ByVal file_name As String, verify As String)
+    Async Sub md5(ByVal file_name As String)
         Status.Content = "Verify MD5..."
         If File.Exists(file_name) Then
 
@@ -310,15 +310,10 @@ Class MainWindow
             fileStream.Close()
             Dim result = BitConverter.ToString(hashValue).Replace("-", "").ToUpperInvariant()
             'MsgBox(result)
-            If result = verify.ToUpperInvariant() Then
-                '81 MD5 True
-                Status.Content = "MD5 Verify Success."
-                Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(81)")
-            Else
-                '82 MD5 False
-                Status.Content = "MD5 Verify Fail. File Corrupt."
-                Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(82)")
-            End If
+            Status.Content = "MD5 Verify Success."
+            '81 Verify Finish
+            Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(81)")
+            Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('" + result + "')")
         Else
             '80 MD5 False
             Status.Content = "Cannot Found File To Verify."
