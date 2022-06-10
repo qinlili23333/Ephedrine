@@ -78,6 +78,27 @@ Class MainWindow
                 'Action 3
                 Case "Prepare"
                     MsgBox("Pending Install Depending Module:" + Message.Arg1)
+                'Action 5
+                Case "Delete"
+                    If (File.Exists(Message.Arg1)) Then
+                        Try
+                            File.Delete(Message.Arg1)
+                            Status.Content = "Delete Success."
+                            '51 Delete Success
+                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(51)")
+                        Catch ex As Exception
+                            Status.Content = "Delete Fail."
+                            '52 Delete Fail
+                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(52)")
+                        End Try
+                    Else
+                        Status.Content = "File Not Found."
+                        '50 File Not Found
+                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(50)")
+                    End If
+                    Progress.Value = 100
+                    Progress.IsIndeterminate = False
+                    IsBusy = False
                 'Action 6
                 Case "Run"
                     Try

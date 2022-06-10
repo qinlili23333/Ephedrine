@@ -280,6 +280,54 @@ window.Ephedrine = {
                         break;
                     };
             }
+        },
+        Delete: async(file) => {
+            switch (await Ephedrine.msgAsync("Delete", file)) {
+                case -1:
+                    {
+                        //Busy
+                        return {
+                            code: -1,
+                            success: false,
+                            result: "",
+                            msg: "Client Busy"
+                        }
+                        break;
+                    };
+                case 50:
+                    {
+                        //File Not Found
+                        return {
+                            code: 50,
+                            success: false,
+                            found: false,
+                            msg: "File Not Found"
+                        }
+                        break;
+                    }
+                case 51:
+                    {
+                        //Delete Success
+                        return {
+                            code: 51,
+                            success: true,
+                            found: true,
+                            msg: "Success"
+                        }
+                        break;
+                    };
+                case 52:
+                    {
+                        //Delete Fail
+                        return {
+                            code: 52,
+                            success: false,
+                            found: true,
+                            msg: "Fail"
+                        }
+                        break;
+                    };
+            }
         }
 
     }
