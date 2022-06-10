@@ -11,6 +11,7 @@
     <Button onclick="install()">Install FFMPEG</Button>
     <Button onclick="kill()">Kill GithubDesktop</Button>
     <Button onclick="md5()">Self Verify MD5</Button>
+    <Button onclick="sha384()">Self Verify SHA384</Button>
     <script>
         const startService = async() => {
             await Ephedrine.Actions.StartService(false);
@@ -28,7 +29,10 @@
             await Ephedrine.Actions.KillProcess("GithubDesktop");
         }
         const md5 = async() => {
-            await Ephedrine.Actions.Verify.MD5("WebModInstaller.exe")
+            await Ephedrine.Actions.Verify("MD5", "WebModInstaller.exe")
+        }
+        const sha384 = async() => {
+            await Ephedrine.Actions.Verify("SHA384", "WebModInstaller.exe")
         }
     </script>
 </body>

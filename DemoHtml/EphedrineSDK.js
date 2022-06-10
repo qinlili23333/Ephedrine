@@ -197,45 +197,55 @@ window.Ephedrine = {
 
             }
         },
-        Verify: {
-            MD5: async(file) => {
-                let result = await Ephedrine.msgAsync("Verify", "MD5", file, null, null, null, true)
-                switch (result.code) {
-                    case -1:
-                        {
-                            //Busy
-                            return {
-                                code: -1,
-                                success: false,
-                                result: "",
-                                msg: "Client Busy"
-                            }
-                            break;
-                        };
-                    case 80:
-                        {
-                            //No File
-                            return {
-                                code: 80,
-                                success: false,
-                                result: result.result,
-                                msg: "No Such File"
-                            }
-                            break;
+        Verify: async(method, file) => {
+            let result = await Ephedrine.msgAsync("Verify", method, file, null, null, null, true)
+            switch (result.code) {
+                case -1:
+                    {
+                        //Busy
+                        return {
+                            code: -1,
+                            success: false,
+                            result: "",
+                            msg: "Client Busy"
                         }
-                    case 81:
-                        {
-                            //Verify Finish
-                            return {
-                                code: 81,
-                                success: true,
-                                result: "",
-                                msg: "Equal"
-                            }
-                            break;
-                        };
-                }
-            },
+                        break;
+                    };
+                case 80:
+                    {
+                        //No File
+                        return {
+                            code: 80,
+                            success: false,
+                            result: result.result,
+                            msg: "No Such File"
+                        }
+                        break;
+                    }
+                case 81:
+                    {
+                        //Verify Finish
+                        return {
+                            code: 81,
+                            success: true,
+                            result: "",
+                            msg: "Success"
+                        }
+                        break;
+                    };
+                case 82:
+                    {
+                        //Unsupport Method
+                        return {
+                            code: 82,
+                            success: false,
+                            result: "",
+                            msg: "Unsupport Method"
+                        }
+                        break;
+                    };
+            }
         },
+
     }
 }

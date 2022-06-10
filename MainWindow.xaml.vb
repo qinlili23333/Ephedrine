@@ -98,64 +98,61 @@ Class MainWindow
                     IsBusy = False
                 'Acrion 8 
                 Case "Verify"
-                    Select Case Message.Arg1
-                        Case "MD5"
-                            md5(Message.Arg2)
-                    End Select
+                    Hash(Message.Arg1, Message.Arg2)
                 'Action 9
-                Case "StartService"
-                    MsgBox(Message.Arg1)
-                    'Detect if service died
-                    If Service IsNot Nothing Then
-                        If Service.HasExited Then
-                            Service = Nothing
-                        End If
-                    End If
-                    If Service Is Nothing Then
-                        Status.Content = "Starting Service..."
-                        Select Case Message.Arg1
-                            Case "User"
-                                Service = Process.Start(Environment.ProcessPath, "--service")
-                            Case "Admin"
-                                Dim info As New ProcessStartInfo(Environment.ProcessPath, "--service") With {
-                                    .UseShellExecute = True,
-                                    .Verb = "runas"
-                                }
-                                Try
-                                    Service = Process.Start(info)
-                                Catch ex As Exception
-                                    MsgBox("Need administrator permission to run service.",, "Error")
-                                    Status.Content = "Administrator Permission Denied."
+                        Case "StartService"
+                            MsgBox(Message.Arg1)
+                            'Detect if service died
+                            If Service IsNot Nothing Then
+                                If Service.HasExited Then
+                                    Service = Nothing
+                                End If
+                            End If
+                            If Service Is Nothing Then
+                                Status.Content = "Starting Service..."
+                                Select Case Message.Arg1
+                                    Case "User"
+                                        Service = Process.Start(Environment.ProcessPath, "--service")
+                                    Case "Admin"
+                                        Dim info As New ProcessStartInfo(Environment.ProcessPath, "--service") With {
+                                            .UseShellExecute = True,
+                                            .Verb = "runas"
+                                        }
+                                        Try
+                                            Service = Process.Start(info)
+                                        Catch ex As Exception
+                                            MsgBox("Need administrator permission to run service.",, "Error")
+                                            Status.Content = "Administrator Permission Denied."
+                                            Progress.Value = 100
+                                            Progress.IsIndeterminate = False
+                                            IsBusy = False
+                                            '90 Start Fail
+                                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(90)")
+                                            Exit Sub
+                                        End Try
+                                End Select
+                                If Service IsNot Nothing Then
+                                    '91 Start Success
+                                    MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(91)")
+                                Else
+                                    MsgBox("Fail to start service. Check if antivirus software stop it.",, "Error")
+                                    Status.Content = "Fail to start service."
                                     Progress.Value = 100
                                     Progress.IsIndeterminate = False
                                     IsBusy = False
                                     '90 Start Fail
                                     MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(90)")
-                                    Exit Sub
-                                End Try
-                        End Select
-                        If Service IsNot Nothing Then
-                            '91 Start Success
-                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(91)")
-                        Else
-                            MsgBox("Fail to start service. Check if antivirus software stop it.",, "Error")
-                            Status.Content = "Fail to start service."
+                                End If
+                            Else
+                                '93 Duplicate Service
+                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(93)")
+                            End If
+                            Status.Content = "Ready."
                             Progress.Value = 100
                             Progress.IsIndeterminate = False
                             IsBusy = False
-                            '90 Start Fail
-                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(90)")
-                        End If
+                    End Select
                     Else
-                        '93 Duplicate Service
-                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(93)")
-                    End If
-                    Status.Content = "Ready."
-                    Progress.Value = 100
-                    Progress.IsIndeterminate = False
-                    IsBusy = False
-            End Select
-        Else
             '-1 Busy
             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(-1)")
         End If
@@ -298,26 +295,47 @@ Class MainWindow
         DownloadClient.DownloadFileAsync(New Uri(link), name)
     End Sub
 
-    Async Sub md5(ByVal file_name As String)
-        Status.Content = "Verify MD5..."
+    Async Sub Hash(method As String, file_name As String)
+        Status.Content = "Verify Hash..."
         If File.Exists(file_name) Then
-
-            Dim hash = System.Security.Cryptography.MD5.Create()
+            Dim hash As HashAlgorithm
+            Select Case method
+                Case "MD5"
+                    hash = MD5.Create()
+                Case "SHA1"
+                    hash = SHA1.Create()
+                Case "SHA256"
+                    hash = SHA256.Create()
+                Case "SHA384"
+                    hash = SHA384.Create()
+                Case "SHA512"
+                    hash = SHA512.Create()
+                Case Else
+                    '82 Unsupport Method
+                    Status.Content = "Unsupported Verify Method"
+                    Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(82)")
+                    Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('')")
+                    Progress.IsIndeterminate = False
+                    Progress.Value = 100
+                    IsBusy = False
+                    Exit Sub
+            End Select
             Dim hashValue() As Byte
             Dim fileStream As FileStream = File.OpenRead(file_name)
             fileStream.Position = 0
-            hashValue = Await hash.ComputeHashAsync(fileStream)
+            hashValue = Await Hash.ComputeHashAsync(fileStream)
             fileStream.Close()
             Dim result = BitConverter.ToString(hashValue).Replace("-", "").ToUpperInvariant()
             'MsgBox(result)
-            Status.Content = "MD5 Verify Success."
+            Status.Content = "Verify Success."
             '81 Verify Finish
             Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(81)")
             Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('" + result + "')")
         Else
-            '80 MD5 False
+            '80 No File
             Status.Content = "Cannot Found File To Verify."
             Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(80)")
+            Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('')")
         End If
         Progress.IsIndeterminate = False
         Progress.Value = 100
