@@ -12,6 +12,8 @@
     <Button onclick="kill()">Kill GithubDesktop</Button>
     <Button onclick="md5()">Self Verify MD5</Button>
     <Button onclick="sha384()">Self Verify SHA384</Button>
+    <Button onclick="run()">Run Another Installe Adminr</Button>
+    <Button onclick="runzip()">Run Another Installer In Unzip Mode</Button>
     <script>
         const startService = async() => {
             await Ephedrine.Actions.StartService(false);
@@ -33,6 +35,12 @@
         }
         const sha384 = async() => {
             await Ephedrine.Actions.Verify("SHA384", "WebModInstaller.exe")
+        }
+        const run = async() => {
+            await Ephedrine.Actions.Run("WebModInstaller.exe", null, true)
+        }
+        const runzip = async() => {
+            await Ephedrine.Actions.Run("WebModInstaller.exe", "--unzip")
         }
     </script>
 </body>

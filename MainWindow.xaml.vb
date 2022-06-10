@@ -78,6 +78,42 @@ Class MainWindow
                 'Action 3
                 Case "Prepare"
                     MsgBox("Pending Install Depending Module:" + Message.Arg1)
+                'Action 6
+                Case "Run"
+                    Try
+                        Dim Run As Process
+                        Select Case Message.Arg3
+                            Case "Admin"
+                                Dim info As New ProcessStartInfo(Message.Arg1, Message.Arg2) With {
+                                            .UseShellExecute = True,
+                                            .Verb = "runas"
+                                        }
+                                Run = Process.Start(info)
+                            Case "User"
+                                Run = Process.Start(Message.Arg1, Message.Arg2)
+                        End Select
+                        '61 Run Success
+                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(61)")
+                        Status.Content = "Start Process Success."
+                    Catch ex As Exception
+                        If ex.Message.Contains("The requested operation requires elevation.") Then
+                            '62 No Permission
+                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(62)")
+                            Status.Content = "Require Elevation."
+                        ElseIf ex.Message.Contains("The system cannot find the file specified.") Then
+                            '63 No File
+                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(63)")
+                            Status.Content = "Program Not Found."
+                        Else
+                            File.WriteAllTextAsync("Error.log", ex.ToString)
+                            '60 Run Fail
+                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(60)")
+                            Status.Content = "Start Process Fail."
+                        End If
+                    End Try
+                    Progress.Value = 100
+                    Progress.IsIndeterminate = False
+                    IsBusy = False
                 'Action 7
                 Case "KillProcess"
                     Dim Proc = Process.GetProcessesByName(Message.Arg1)
@@ -166,6 +202,7 @@ Class MainWindow
             Try
                 File.Delete("QinliliPatch.zip")
             Catch ex As Exception
+                File.WriteAllTextAsync("Error.log", ex.ToString)
                 MsgBox("Failed to delete unused patch file. Please try to delete 'QinliliPatch.zip' manually and continue.",, "Error")
             End Try
         End If
@@ -196,6 +233,7 @@ Class MainWindow
                                                                       Try
                                                                           File.Delete("QinliliPatch.zip")
                                                                       Catch ex As Exception
+                                                                          File.WriteAllTextAsync("Error.log", ex.ToString)
                                                                           MsgBox("Failed to delete unused patch file. Please try to delete 'QinliliPatch.zip' manually.",, "Error")
                                                                       End Try
                                                                   End If
@@ -221,6 +259,7 @@ Class MainWindow
                                                                                                                                        Try
                                                                                                                                            File.Delete("QinliliPatch.zip")
                                                                                                                                        Catch ex2 As Exception
+                                                                                                                                           File.WriteAllTextAsync("Error.log", ex.ToString)
                                                                                                                                            MsgBox("Failed to delete unused patch file. Please try to delete 'QinliliPatch.zip' manually.",, "Error")
                                                                                                                                        End Try
                                                                                                                                    End If
@@ -228,6 +267,7 @@ Class MainWindow
                                                                                                                                        Try
                                                                                                                                            File.Delete("InstallLocation")
                                                                                                                                        Catch ex2 As Exception
+                                                                                                                                           File.WriteAllTextAsync("Error.log", ex.ToString)
                                                                                                                                            MsgBox("Failed to delete unused patch file. Please try to delete 'InstallLocation' manually.",, "Error")
                                                                                                                                        End Try
                                                                                                                                    End If
@@ -251,6 +291,7 @@ Class MainWindow
                                                                               Try
                                                                                   File.Delete("QinliliPatch.zip")
                                                                               Catch ex3 As Exception
+                                                                                  File.WriteAllTextAsync("Error.log", ex.ToString)
                                                                                   MsgBox("Failed to delete unused patch file. Please try to delete 'QinliliPatch.zip' manually.",, "Error")
                                                                               End Try
                                                                           End If
@@ -258,6 +299,7 @@ Class MainWindow
                                                                               Try
                                                                                   File.Delete("InstallLocation")
                                                                               Catch ex3 As Exception
+                                                                                  File.WriteAllTextAsync("Error.log", ex.ToString)
                                                                                   MsgBox("Failed to delete unused patch file. Please try to delete 'InstallLocation' manually.",, "Error")
                                                                               End Try
                                                                           End If

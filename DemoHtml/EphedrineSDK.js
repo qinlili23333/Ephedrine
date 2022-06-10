@@ -246,6 +246,41 @@ window.Ephedrine = {
                     };
             }
         },
+        Run: async(program, argu, admin) => {
+            switch (await Ephedrine.msgAsync("Run", program, argu, admin ? "Admin" : "User")) {
+                case -1:
+                    {
+                        //Busy
+                        return {
+                            code: -1,
+                            success: false,
+                            result: "",
+                            msg: "Client Busy"
+                        }
+                        break;
+                    };
+                case 60:
+                    {
+                        //Run Fail
+                        return {
+                            code: 60,
+                            success: false,
+                            msg: "Run Failed"
+                        }
+                        break;
+                    }
+                case 61:
+                    {
+                        //VRun Success
+                        return {
+                            code: 61,
+                            success: true,
+                            msg: "Success"
+                        }
+                        break;
+                    };
+            }
+        }
 
     }
 }
