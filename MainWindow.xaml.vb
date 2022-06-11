@@ -70,7 +70,7 @@ Class MainWindow
                             InstallZip(Link, Location)
                         'No exctract and directly run
                         Case "run"
-
+                            DownloadAndRun(Link, Location, Message.Arg4, Message.Arg5)
                         'Only save to local
                         Case "save"
                             DownloadOnly(Link, Location)
@@ -354,6 +354,52 @@ Class MainWindow
                                                               Status.Content = "Download Patch Success."
                                                               Progress.Value = 100
                                                               IsBusy = False
+                                                          End Sub)
+        DownloadClient.DownloadFileAsync(New Uri(link), name)
+    End Sub
+    Private Sub DownloadAndRun(link As String, name As String, user As String, argu As String)
+        Progress.IsIndeterminate = False
+        Status.Content = "Downloading Patch File..."
+        Dim DownloadClient As New WebClient
+        AddHandler DownloadClient.DownloadProgressChanged, (Sub(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs)
+                                                                Progress.Value = e.ProgressPercentage
+                                                            End Sub)
+        AddHandler DownloadClient.DownloadFileCompleted, (Sub()
+                                                              Dim RunProc As Process
+                                                              Select Case user
+                                                                  Case "User"
+                                                                      Try
+                                                                          RunProc = Process.Start(name, argu)
+                                                                          '16 Download And Run Success 
+                                                                          MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(16)")
+                                                                          Status.Content = "Run Patch Success."
+                                                                          Progress.Value = 100
+                                                                          IsBusy = False
+                                                                      Catch ex As Exception
+                                                                          '18 Run Fail
+                                                                          MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(18)")
+                                                                          Status.Content = "Failed To Run Patch."
+                                                                          Progress.Value = 100
+                                                                          IsBusy = False
+                                                                      End Try
+                                                                  Case "Admin"
+                                                                      Dim info As New ProcessStartInfo(name, argu) With {
+                                            .UseShellExecute = True,
+                                            .Verb = "runas"
+                                        }
+                                                                      Try
+                                                                          RunProc = Process.Start(info)
+                                                                      Catch ex As Exception
+                                                                          MsgBox("Need administrator permission to run service.",, "Error")
+                                                                          Status.Content = "Administrator Permission Denied."
+                                                                          Progress.Value = 100
+                                                                          Progress.IsIndeterminate = False
+                                                                          IsBusy = False
+                                                                          '17 No Permission Start
+                                                                          MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(17)")
+                                                                          Exit Sub
+                                                                      End Try
+                                                              End Select
                                                           End Sub)
         DownloadClient.DownloadFileAsync(New Uri(link), name)
     End Sub

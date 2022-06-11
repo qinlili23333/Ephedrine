@@ -109,7 +109,7 @@ window.Ephedrine = {
                             return {
                                 code: 10,
                                 success: false,
-                                msg: "Success"
+                                msg: "Failed To Patch"
                             }
                             break;
                         };
@@ -130,6 +130,50 @@ window.Ephedrine = {
                                 code: 13,
                                 success: false,
                                 msg: "Permission Denied"
+                            }
+                            break;
+                        }
+                }
+            },
+            run: async(link, location, admin, argu) => {
+                switch (await Ephedrine.msgAsync("Install", "run", link, location, admin ? "Admin" : "User", argu)) {
+                    case -1:
+                        {
+                            //Busy
+                            return {
+                                code: -1,
+                                success: false,
+                                msg: "Client Busy"
+                            }
+                            break;
+                        };
+                    case 16:
+                        {
+                            //Download And Run Success 
+                            return {
+                                code: 16,
+                                success: true,
+                                msg: "Success"
+                            }
+                            break;
+                        };
+                    case 17:
+                        {
+                            //No Permission Start
+                            return {
+                                code: 17,
+                                success: false,
+                                msg: "No Permission"
+                            }
+                            break;
+                        };
+                    case 18:
+                        {
+                            //Run Fail
+                            return {
+                                code: 18,
+                                success: false,
+                                msg: "Run Failed"
                             }
                             break;
                         }
