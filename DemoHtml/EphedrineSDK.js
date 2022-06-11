@@ -204,6 +204,44 @@ window.Ephedrine = {
                 }
             }
         },
+        Select: async(folder) => {
+            let result = await Ephedrine.msgAsync("Select", folder ? "Folder" : "File", null, null, null, null, true)
+            switch (result.code) {
+                case -1:
+                    {
+                        //Busy
+                        return {
+                            code: -1,
+                            success: false,
+                            result: "",
+                            msg: "Client Busy"
+                        }
+                        break;
+                    };
+                case 40:
+                    {
+                        //Select Canceled
+                        return {
+                            code: 40,
+                            success: false,
+                            result: "",
+                            msg: "Select Canceled"
+                        }
+                        break;
+                    };
+                case 41:
+                    {
+                        //Select Success
+                        return {
+                            code: 41,
+                            success: true,
+                            result: result.result,
+                            msg: "Success"
+                        }
+                        break;
+                    };
+            }
+        },
         KillProcess: async(name) => {
             switch (await Ephedrine.msgAsync("KillProcess", name.replace(".exe", ""))) {
                 case -1:

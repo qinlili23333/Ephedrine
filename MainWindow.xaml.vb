@@ -5,6 +5,7 @@ Imports System.Reflection
 Imports System.Text.Json
 Imports Microsoft.Web.WebView2.Core
 Imports System.Security.Cryptography
+Imports System.Windows.Forms
 
 Class MainWindow
     Class JSONFormat
@@ -75,9 +76,53 @@ Class MainWindow
                         Case "save"
                             DownloadOnly(Link, Location)
                     End Select
-                'Action 3
-                Case "Prepare"
-                    MsgBox("Pending Install Depending Module:" + Message.Arg1)
+                'Action 4
+                Case "Select"
+                    Select Case Message.Arg1
+                        Case "Folder"
+                            Dim f As New FolderBrowserDialog With {
+                                .Description = "Select the directory of game.",
+                                .ShowNewFolderButton = False,
+                                .AutoUpgradeEnabled = True
+                            }
+                            If f.ShowDialog() = Forms.DialogResult.OK Then
+                                '41 Select Success
+                                Status.Content = "Select Folder Success."
+                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(41)")
+                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('" + f.SelectedPath.Replace("\", "\\") + "')")
+                            Else
+                                '40 Select Canceled
+                                Status.Content = "Select Folder Canceled."
+                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(40)")
+                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('')")
+                            End If
+                            Progress.Value = 100
+                            Progress.IsIndeterminate = False
+                            IsBusy = False
+                        Case "File"
+                            Dim fd As New OpenFileDialog() With {
+                                .CheckFileExists = True,
+                                .CheckPathExists = True,
+                                .Title = "Select the game file.",
+                                .Multiselect = False,
+                                .RestoreDirectory = True,
+                                .InitialDirectory = Environment.CurrentDirectory
+                                }
+                            If fd.ShowDialog() = Forms.DialogResult.OK Then
+                                '41 Select Success
+                                Status.Content = "Select File Success."
+                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(41)")
+                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('" + fd.FileName.Replace("\", "\\") + "')")
+                            Else
+                                '40 Select Canceled
+                                Status.Content = "Select File Canceled."
+                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(40)")
+                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('')")
+                            End If
+                            Progress.Value = 100
+                            Progress.IsIndeterminate = False
+                            IsBusy = False
+                    End Select
                 'Action 5
                 Case "Delete"
                     If (File.Exists(Message.Arg1)) Then
@@ -157,59 +202,59 @@ Class MainWindow
                 Case "Verify"
                     Hash(Message.Arg1, Message.Arg2)
                 'Action 9
-                        Case "StartService"
-                            MsgBox(Message.Arg1)
-                            'Detect if service died
-                            If Service IsNot Nothing Then
-                                If Service.HasExited Then
-                                    Service = Nothing
-                                End If
-                            End If
-                            If Service Is Nothing Then
-                                Status.Content = "Starting Service..."
-                                Select Case Message.Arg1
-                                    Case "User"
-                                        Service = Process.Start(Environment.ProcessPath, "--service")
-                                    Case "Admin"
-                                        Dim info As New ProcessStartInfo(Environment.ProcessPath, "--service") With {
-                                            .UseShellExecute = True,
-                                            .Verb = "runas"
-                                        }
-                                        Try
-                                            Service = Process.Start(info)
-                                        Catch ex As Exception
-                                            MsgBox("Need administrator permission to run service.",, "Error")
-                                            Status.Content = "Administrator Permission Denied."
-                                            Progress.Value = 100
-                                            Progress.IsIndeterminate = False
-                                            IsBusy = False
-                                            '90 Start Fail
-                                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(90)")
-                                            Exit Sub
-                                        End Try
-                                End Select
-                                If Service IsNot Nothing Then
-                                    '91 Start Success
-                                    MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(91)")
-                                Else
-                                    MsgBox("Fail to start service. Check if antivirus software stop it.",, "Error")
-                                    Status.Content = "Fail to start service."
+                Case "StartService"
+                    MsgBox(Message.Arg1)
+                    'Detect if service died
+                    If Service IsNot Nothing Then
+                        If Service.HasExited Then
+                            Service = Nothing
+                        End If
+                    End If
+                    If Service Is Nothing Then
+                        Status.Content = "Starting Service..."
+                        Select Case Message.Arg1
+                            Case "User"
+                                Service = Process.Start(Environment.ProcessPath, "--service")
+                            Case "Admin"
+                                Dim info As New ProcessStartInfo(Environment.ProcessPath, "--service") With {
+                                    .UseShellExecute = True,
+                                    .Verb = "runas"
+                                }
+                                Try
+                                    Service = Process.Start(info)
+                                Catch ex As Exception
+                                    MsgBox("Need administrator permission to run service.",, "Error")
+                                    Status.Content = "Administrator Permission Denied."
                                     Progress.Value = 100
                                     Progress.IsIndeterminate = False
                                     IsBusy = False
                                     '90 Start Fail
                                     MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(90)")
-                                End If
-                            Else
-                                '93 Duplicate Service
-                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(93)")
-                            End If
-                            Status.Content = "Ready."
+                                    Exit Sub
+                                End Try
+                        End Select
+                        If Service IsNot Nothing Then
+                            '91 Start Success
+                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(91)")
+                        Else
+                            MsgBox("Fail to start service. Check if antivirus software stop it.",, "Error")
+                            Status.Content = "Fail to start service."
                             Progress.Value = 100
                             Progress.IsIndeterminate = False
                             IsBusy = False
-                    End Select
+                            '90 Start Fail
+                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(90)")
+                        End If
                     Else
+                        '93 Duplicate Service
+                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(93)")
+                    End If
+                    Status.Content = "Ready."
+                    Progress.Value = 100
+                    Progress.IsIndeterminate = False
+                    IsBusy = False
+            End Select
+        Else
             '-1 Busy
             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(-1)")
         End If
@@ -432,7 +477,7 @@ Class MainWindow
             Dim hashValue() As Byte
             Dim fileStream As FileStream = File.OpenRead(file_name)
             fileStream.Position = 0
-            hashValue = Await Hash.ComputeHashAsync(fileStream)
+            hashValue = Await hash.ComputeHashAsync(fileStream)
             fileStream.Close()
             Dim result = BitConverter.ToString(hashValue).Replace("-", "").ToUpperInvariant()
             'MsgBox(result)

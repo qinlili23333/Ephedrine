@@ -16,6 +16,8 @@
     <Button onclick="run()">Run Another Installe Adminr</Button>
     <Button onclick="runzip()">Run Another Installer In Unzip Mode</Button>
     <Button onclick="deleteFile()">Delete PDB File</Button>
+    <Button onclick="select()">Select File</Button>
+    <Button onclick="selectfolder()">SelectFolder</Button>
     <script>
         const startService = async() => {
             await Ephedrine.Actions.StartService(false);
@@ -49,6 +51,12 @@
         }
         const deleteFile = async() => {
             await Ephedrine.Actions.Delete("WebModInstaller.pdb")
+        }
+        const select = async() => {
+            await Ephedrine.Actions.Select(false)
+        }
+        const selectfolder = async() => {
+            await Ephedrine.Actions.Select(true)
         }
     </script>
 </body>
