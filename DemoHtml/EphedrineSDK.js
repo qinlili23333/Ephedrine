@@ -41,6 +41,7 @@ window.Ephedrine = {
             }
         })
     },
+    Ready: !!window.chrome.webview,
     Actions: {
         StartService: async(elevated) => {
             switch (await Ephedrine.msgAsync("StartService", elevated ? "Admin" : "User")) {
