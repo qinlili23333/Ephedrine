@@ -16,6 +16,11 @@ Class MainWindow
         Public Property Arg4 As String
         Public Property Arg5 As String
     End Class
+    Class FileList
+        Public Property Size As Long
+        Public Property Name As String
+        Public Property IsFolder As Boolean
+    End Class
     Dim IsBusy As Boolean = False
     Dim Service As Process
     Private Async Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
@@ -76,6 +81,51 @@ Class MainWindow
                         Case "save"
                             DownloadOnly(Link, Location)
                     End Select
+                'Action 3
+                Case "List"
+                    Try
+                        Dim dirPath As String
+                        If Message.Arg1 = "Here" Or Message.Arg1 = Nothing Then
+                            dirPath = ".\"
+                        Else
+                            dirPath = Message.Arg1
+                        End If
+                        Dim di As New DirectoryInfo(dirPath)
+                        Dim aryFi As FileInfo() = di.GetFiles()
+                        Dim aryDr As DirectoryInfo() = di.GetDirectories()
+                        Dim fiInfo As Object() = New Object(aryFi.Length + aryDr.Length) {}
+                        Dim num As Integer = 0
+                        For Each dr As DirectoryInfo In aryDr
+                            fiInfo(num) = New FileList With {
+                                .Size = 0,
+                                .Name = dr.Name,
+                                .IsFolder = True
+                            }
+                            num += 1
+                        Next
+                        For Each fi As FileInfo In aryFi
+                            fiInfo(num) = New FileList With {
+                                .Size = fi.Length,
+                                .Name = fi.Name,
+                                .IsFolder = False
+                            }
+                            num += 1
+                        Next
+                        Convert.ToBase64String(Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(fiInfo)))
+                        '31 List Success
+                        Status.Content = "List Folder Success."
+                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(31)")
+                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('" + Convert.ToBase64String(Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(fiInfo))) + "')")
+                    Catch ex As Exception
+                        File.WriteAllTextAsync("Error.log", ex.ToString)
+                        '30 List Failed
+                        Status.Content = "List Folder Failed."
+                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(30)")
+                        MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('')")
+                    End Try
+                    Progress.Value = 100
+                    Progress.IsIndeterminate = False
+                    IsBusy = False
                 'Action 4
                 Case "Select"
                     Select Case Message.Arg1
@@ -263,6 +313,11 @@ Class MainWindow
     'Download and install zip file
     Private Sub InstallZip(link As String, loc As String)
         Dim Location As String
+        If loc = "Here" Then
+            Location = ".\"
+        Else
+            Location = loc
+        End If
         Status.Content = "Downloading Patch File..."
         If File.Exists("QinliliPatch.zip") Then
             Try
@@ -380,11 +435,6 @@ Class MainWindow
                                                           End Sub)
         DownloadClient.DownloadFileAsync(New Uri(link), "QinliliPatch.zip")
         Progress.IsIndeterminate = False
-        If loc = "Here" Then
-            Location = ".\"
-        Else
-            Location = loc
-        End If
     End Sub
     Private Sub DownloadOnly(link As String, name As String)
         Progress.IsIndeterminate = False

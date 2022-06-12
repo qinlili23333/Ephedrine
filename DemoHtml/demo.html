@@ -17,7 +17,8 @@
     <Button onclick="runzip()">Run Another Installer In Unzip Mode</Button>
     <Button onclick="deleteFile()">Delete PDB File</Button>
     <Button onclick="select()">Select File</Button>
-    <Button onclick="selectfolder()">SelectFolder</Button>
+    <Button onclick="selectfolder()">Select Folder</Button>
+    <Button onclick="list()">List Current Path</Button>
     <script>
         const startService = async() => {
             await Ephedrine.Actions.StartService(false);
@@ -57,6 +58,9 @@
         }
         const selectfolder = async() => {
             await Ephedrine.Actions.Select(true)
+        }
+        const list = async() => {
+            await Ephedrine.Actions.List()
         }
     </script>
 </body>

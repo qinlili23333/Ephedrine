@@ -45,6 +45,7 @@
   <ItemGroup>
     <PackageReference Include="FontAwesome.Sharp" Version="5.15.4" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1248-prerelease" />
+    <PackageReference Include="SharpCompress" Version="0.31.0" />
   </ItemGroup>
 
 </Project>

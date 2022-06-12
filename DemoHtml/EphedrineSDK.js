@@ -5,7 +5,7 @@ window.Ephedrine = {
     },
     msgResult: result => {
         console.log(result);
-        Ephedrine.processCode(code);
+        Ephedrine.processResult(result);
     },
     request: (action, arg1, arg2, arg3, arg4, arg5) => {
         window.chrome.webview.postMessage({ Action: action, Arg1: arg1, Arg2: arg2, Arg3: arg3, Arg4: arg4, Arg5: arg5 });
@@ -16,10 +16,10 @@ window.Ephedrine = {
         return new Promise(resolve => {
             Ephedrine.request(action, arg1, arg2, arg3, arg4, arg5);
             if (forResult) {
-                let result1 = "";
+                let result1 = "Empty";
                 let code1 = 0;
                 const triggerCheck = () => {
-                    if (!(result1 === "") && !(code1 === 0)) {
+                    if (!(result1 === "Empty") && !(code1 === 0)) {
                         resolve({
                             result: result1,
                             code: code1
@@ -88,6 +88,44 @@ window.Ephedrine = {
                         }
                         break;
                     }
+            }
+        },
+        List: async(path) => {
+            let result = await Ephedrine.msgAsync("List", path, null, null, null, null, true)
+            switch (result.code) {
+                case -1:
+                    {
+                        //Busy
+                        return {
+                            code: -1,
+                            success: false,
+                            result: "",
+                            msg: "Client Busy"
+                        }
+                        break;
+                    };
+                case 30:
+                    {
+                        //List Failed
+                        return {
+                            code: 40,
+                            success: false,
+                            result: "",
+                            msg: "List Failed"
+                        }
+                        break;
+                    };
+                case 31:
+                    {
+                        //List Success
+                        return {
+                            code: 41,
+                            success: true,
+                            result: JSON.parse(atob(result.result)),
+                            msg: "Success"
+                        }
+                        break;
+                    };
             }
         },
         Install: {
@@ -299,7 +337,7 @@ window.Ephedrine = {
                         return {
                             code: 80,
                             success: false,
-                            result: result.result,
+                            result: "",
                             msg: "No Such File"
                         }
                         break;
@@ -310,7 +348,7 @@ window.Ephedrine = {
                         return {
                             code: 81,
                             success: true,
-                            result: "",
+                            result: result.result,
                             msg: "Success"
                         }
                         break;
