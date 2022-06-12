@@ -93,7 +93,7 @@ Class MainWindow
                         Dim di As New DirectoryInfo(dirPath)
                         Dim aryFi As FileInfo() = di.GetFiles()
                         Dim aryDr As DirectoryInfo() = di.GetDirectories()
-                        Dim fiInfo As Object() = New Object(aryFi.Length + aryDr.Length) {}
+                        Dim fiInfo As Object() = New Object(aryFi.Length + aryDr.Length - 1) {}
                         Dim num As Integer = 0
                         For Each dr As DirectoryInfo In aryDr
                             fiInfo(num) = New FileList With {

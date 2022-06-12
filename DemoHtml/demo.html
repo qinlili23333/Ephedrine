@@ -19,6 +19,7 @@
     <Button onclick="select()">Select File</Button>
     <Button onclick="selectfolder()">Select Folder</Button>
     <Button onclick="list()">List Current Path</Button>
+    <Button onclick="listSelect()">List Selected Path</Button>
     <script>
         const startService = async() => {
             await Ephedrine.Actions.StartService(false);
@@ -61,6 +62,9 @@
         }
         const list = async() => {
             await Ephedrine.Actions.List()
+        }
+        const listSelect = async() => {
+            await Ephedrine.Actions.List((await Ephedrine.Actions.Select(true)).result)
         }
     </script>
 </body>
