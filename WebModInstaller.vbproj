@@ -11,7 +11,6 @@
     <Authors>Qinlili</Authors>
     <Copyright>Qinlili 2022 OpenSource</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <DelaySign>false</DelaySign>
     <Version>1.0.0</Version>
     <StartupObject>WebModInstaller.Application</StartupObject>
     <Platforms>x64;ARM64</Platforms>
@@ -51,7 +50,5 @@
     <PackageReference Include="FontAwesome.Sharp" Version="5.15.4" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1248-prerelease" />
   </ItemGroup>
-
-  <ProjectExtensions><VisualStudio><UserProperties config_1json__JsonSchema="https://json-stat.org/format/schema/2.0/" /></VisualStudio></ProjectExtensions>
 
 </Project>
