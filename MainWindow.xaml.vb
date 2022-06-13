@@ -74,7 +74,6 @@ Class MainWindow
     End Sub
     Private Sub MainWeb_NavigationStarting(sender As Object, e As CoreWebView2NavigationStartingEventArgs) Handles MainWeb.NavigationStarting
         Status.Content = "Loading Web Page..."
-        MsgBox(New Uri(e.Uri).DnsSafeHost)
         If InternalConfig.EnableWhitelist And Not InternalConfig.Whitelist.Contains(New Uri(e.Uri).DnsSafeHost) Then
             MsgBox("Not Allowed")
             e.Cancel = True

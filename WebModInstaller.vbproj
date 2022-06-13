@@ -10,8 +10,6 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
     <Authors>Qinlili</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>abc.pfx</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <StartupObject>WebModInstaller.Application</StartupObject>
   </PropertyGroup>
