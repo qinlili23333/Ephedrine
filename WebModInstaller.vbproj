@@ -21,12 +21,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Config.json" />
     <None Remove="drivers.ico" />
+    <None Remove="index.html" />
     <None Remove="WebView2Loader.dll" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Config.json" />
     <EmbeddedResource Include="drivers.ico" />
+    <EmbeddedResource Include="index.html" />
     <EmbeddedResource Include="WebView2Loader.dll" />
   </ItemGroup>
 
@@ -46,5 +50,7 @@
     <PackageReference Include="FontAwesome.Sharp" Version="5.15.4" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1248-prerelease" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties config_1json__JsonSchema="https://json-stat.org/format/schema/2.0/" /></VisualStudio></ProjectExtensions>
 
 </Project>

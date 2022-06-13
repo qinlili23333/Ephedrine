@@ -1,0 +1,8 @@
+﻿{
+	"StartPage": "https://gen2.qinlili.bid",
+	"EnableContextMenu": true,
+	"Devtool": "Always",
+	"EnableWhitelist": true,
+	"Whitelist": ["gen2.qinlili.bid","qinlili.bid","545.qinlili.bid"],
+	"Title": "Qinlili Demo"
+}

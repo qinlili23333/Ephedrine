@@ -8,6 +8,21 @@ Imports System.Security.Cryptography
 Imports System.Windows.Forms
 
 Class MainWindow
+    Class Config
+        '"Internal" to use built in index.html, Or a specify web address Like "https://qinlili.bid"
+        Public Property StartPage As String
+        'Right click will show default webview context menu if enabled
+        Public Property EnableContextMenu As Boolean
+        '"Always" to enable F12 under any circumstances, Or a specify command Like "--debugKey 1145141919810" when launch with this key F12 will be enabled
+        Public Property Devtool As String
+        'Pages Not in whitelist will be opened in browser instead of in installer if enabled
+        Public Property EnableWhitelist As Boolean
+        'Domains that allowed to access in whitelist mode
+        Public Property Whitelist As String()
+        'Installer title
+        Public Property Title As String
+    End Class
+    Dim InternalConfig As Config
     Class JSONFormat
         Public Property Action As String
         Public Property Arg1 As String
@@ -24,6 +39,7 @@ Class MainWindow
     Dim IsBusy As Boolean = False
     Dim Service As Process
     Private Async Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+        ReadConfig()
         Status.Content = "Loading WebView2..."
         If Not File.Exists("WebView2Loader.dll") Then
             Dim fs As New FileStream("WebView2Loader.dll", FileMode.Create)
@@ -38,14 +54,31 @@ Class MainWindow
         Progress.IsIndeterminate = False
         Progress.Value = 10
         MainWeb.CoreWebView2.Settings.IsStatusBarEnabled = False
+        MainWeb.CoreWebView2.Settings.AreDefaultContextMenusEnabled = InternalConfig.EnableContextMenu
+        If Not InternalConfig.Devtool = "Always" And Not InternalConfig.Devtool = Command() Then
+            MainWeb.CoreWebView2.Settings.AreDevToolsEnabled = False
+        End If
         Status.Content = "Loading Web Page..."
-        MainWeb.CoreWebView2.Navigate("http://127.0.0.1:8082")
+        If InternalConfig.StartPage = "Internal" Then
+            Dim reader As StreamReader = New StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.index.html"))
+            Dim htmlString As String = Await reader.ReadToEndAsync()
+            MainWeb.CoreWebView2.NavigateToString(htmlString)
+        Else
+            MainWeb.CoreWebView2.Navigate(InternalConfig.StartPage)
+        End If
     End Sub
 
-
+    Private Sub ReadConfig()
+        InternalConfig = JsonSerializer.Deserialize(Of Config)(Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.Config.json"))
+        Title = InternalConfig.Title
+    End Sub
     Private Sub MainWeb_NavigationStarting(sender As Object, e As CoreWebView2NavigationStartingEventArgs) Handles MainWeb.NavigationStarting
         Status.Content = "Loading Web Page..."
-        'MsgBox(e.Uri)
+        MsgBox(New Uri(e.Uri).DnsSafeHost)
+        If InternalConfig.EnableWhitelist And Not InternalConfig.Whitelist.Contains(New Uri(e.Uri).DnsSafeHost) Then
+            MsgBox("Not Allowed")
+            e.Cancel = True
+        End If
         Progress.Value = 10
     End Sub
 
