@@ -9,9 +9,12 @@
     <ApplicationIcon>drivers.ico</ApplicationIcon>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
     <Authors>Qinlili</Authors>
+    <Copyright>Qinlili 2022 OpenSource</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <DelaySign>false</DelaySign>
+    <Version>1.0.0</Version>
     <StartupObject>WebModInstaller.Application</StartupObject>
+    <Platforms>x64;ARM64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
