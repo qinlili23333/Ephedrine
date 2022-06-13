@@ -20,6 +20,7 @@
     <Button onclick="selectfolder()">Select Folder</Button>
     <Button onclick="list()">List Current Path</Button>
     <Button onclick="listSelect()">List Selected Path</Button>
+    <Button onclick="steamCon()">Launch Steam Console</Button>
     <script>
         const startService = async() => {
             await Ephedrine.Actions.StartService(false);
@@ -65,6 +66,9 @@
         }
         const listSelect = async() => {
             await Ephedrine.Actions.List((await Ephedrine.Actions.Select(true)).result)
+        }
+        const steamCon = async() => {
+            await Ephedrine.Actions.Run("steam://open/console", null, null, true)
         }
     </script>
 </body>

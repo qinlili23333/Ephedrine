@@ -207,6 +207,8 @@ Class MainWindow
                                 Run = Process.Start(info)
                             Case "User"
                                 Run = Process.Start(Message.Arg1, Message.Arg2)
+                            Case "Intent"
+                                Interaction.Shell("cmd.exe /c start " + Message.Arg1 + " & exit", AppWinStyle.Hide)
                         End Select
                         '61 Run Success
                         MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(61)")

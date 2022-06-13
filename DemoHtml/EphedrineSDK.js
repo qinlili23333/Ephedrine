@@ -367,8 +367,8 @@ window.Ephedrine = {
                     };
             }
         },
-        Run: async(program, argu, admin) => {
-            switch (await Ephedrine.msgAsync("Run", program, argu, admin ? "Admin" : "User")) {
+        Run: async(program, argu, admin, intent) => {
+            switch (await Ephedrine.msgAsync("Run", program, argu, intent ? "Intent" : (admin ? "Admin" : "User"))) {
                 case -1:
                     {
                         //Busy
