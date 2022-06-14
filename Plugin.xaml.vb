@@ -10,6 +10,7 @@ Public Class Plugin
         Public Property Name As String
         Public Property Program As String
         Public Property Argument As String
+        Public Property Update As Boolean
     End Class
     Class PluginJson
         Public Property Name As String
@@ -20,7 +21,7 @@ Public Class Plugin
         Public Property Source As String
     End Class
     Dim CurrentPlugin As PluginInfo
-    Public Sub New(PluginName As String, PluginProgram As String, Argument As String)
+    Public Sub New(PluginName As String, PluginProgram As String, Argument As String, Optional ForceUpdate As Boolean = False)
 
         ' 此调用是设计器所必需的。
         InitializeComponent()
@@ -30,7 +31,8 @@ Public Class Plugin
         CurrentPlugin = New PluginInfo With {
             .Name = PluginName,
             .Program = PluginProgram,
-            .Argument = Argument
+            .Argument = Argument,
+            .Update = ForceUpdate
         }
         Argu.Text = PluginProgram + " " + Argument
     End Sub

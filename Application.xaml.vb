@@ -20,6 +20,8 @@ Public Class Application
             Tray.Visible = True
         ElseIf Command() = "--unzip" Then
             StartupUri = New System.Uri("Unzip.xaml", System.UriKind.Relative)
+        ElseIf Command() = "--plugins" Then
+            StartupUri = New System.Uri("PluginManage.xaml", System.UriKind.Relative)
         Else
             StartupUri = New System.Uri("MainWindow.xaml", System.UriKind.Relative)
         End If
