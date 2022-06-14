@@ -5,7 +5,7 @@ Imports System.Text.Json
 Imports System.Windows.Forms
 
 Public Class Plugin
-    Dim PluginPath As String = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\Ephedrine\Plugins"
+    ReadOnly PluginPath As String = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\Ephedrine\Plugins"
     Class PluginInfo
         Public Property Name As String
         Public Property Program As String
@@ -70,6 +70,7 @@ Public Class Plugin
             Dim RunProcess = Diagnostics.Process.Start(SI)
             Await RunProcess.WaitForExitAsync()
         End If
+        Progress.Value = 100
         StatusLabel.Content = "Actions done. Window close in 3 seconds."
         Progress.IsIndeterminate = False
         Await Task.Delay(3000)
@@ -103,7 +104,7 @@ Public Class Plugin
             archive.ExtractToDirectory(PluginPath, True)
             Progress.Value = 80
             StatusLabel.Content = "Cleaning up..."
-            File.Move(PluginPath + "\Pending\" + Name + ".json", PluginPath + "\Installed\" + Name + ".json")
+            File.Move(PluginPath + "\Pending\" + Name + ".json", PluginPath + "\Installed\" + Name + ".json", True)
             StatusLabel.Content = "Install Success. Launching..."
             Progress.Value = 100
         Catch ex As Exception

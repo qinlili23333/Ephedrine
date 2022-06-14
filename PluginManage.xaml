@@ -5,21 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WebModInstaller"
         mc:Ignorable="d"
-        Title="Plugin Manage" Height="600" Width="400">
+        Title="Plugin Manage" Height="600" Width="400" ResizeMode="NoResize">
     <Grid Margin="0,0,0,10">
-        <Grid x:Name="InstallList" VerticalAlignment="Top" Height="535" Margin="0,10,0,0"/>
-        <Grid VerticalAlignment="Bottom" Width="400" HorizontalAlignment="Center">
-            <Button x:Name="Uninstall" Content="Uninstall" HorizontalAlignment="Left" Margin="330,0,0,0" VerticalAlignment="Center" Width="60" VerticalContentAlignment="Stretch" Height="24"/>
-            <Button x:Name="Update" Content="Update" HorizontalAlignment="Left" Margin="260,0,0,0" VerticalAlignment="Center" Width="60" VerticalContentAlignment="Stretch" Height="24">
+        <ScrollViewer  VerticalAlignment="Top" Height="515" Margin="0,10,0,10">
+            <StackPanel x:Name="InstallList"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,0,0,0" />
+        </ScrollViewer>
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+            <Button x:Name="Uninstall" Content="Uninstall" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Width="60" VerticalContentAlignment="Stretch" Height="24"/>
+            <Button x:Name="Update" Content="Update" HorizontalAlignment="Right" Margin="0,0,80,0" VerticalAlignment="Center" Width="60" VerticalContentAlignment="Stretch" Height="24">
             </Button>
+            <CheckBox x:Name="ForceReinstall" Content="Force Reinstall Update" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
         </Grid>
-        <ProgressBar x:Name="Progress" HorizontalAlignment="Stretch" Height="10" VerticalAlignment="Top" Foreground="#FF9BFFAE" BorderThickness="0,0,0,0" IsIndeterminate="True">
-            <ProgressBar.BorderBrush>
-                <ImageBrush/>
-            </ProgressBar.BorderBrush>
-            <ProgressBar.Background>
-                <ImageBrush/>
-            </ProgressBar.Background>
-        </ProgressBar>
     </Grid>
 </Window>

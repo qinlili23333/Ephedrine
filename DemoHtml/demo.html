@@ -21,6 +21,8 @@
     <Button onclick="list()">List Current Path</Button>
     <Button onclick="listSelect()">List Selected Path</Button>
     <Button onclick="steamCon()">Launch Steam Console</Button>
+    <Button onclick="install7z()">Install 7Zip Plugin And Benchmark</Button>
+    <Button onclick="manage()">Manage Plugins</Button>
     <script>
         const startService = async() => {
             await Ephedrine.Actions.StartService(false);
@@ -69,6 +71,12 @@
         }
         const steamCon = async() => {
             await Ephedrine.Actions.Run("steam://open/console", null, null, true)
+        }
+        const install7z = async()=>{
+            await Ephedrine.Actions.Plugin("7Zip","7za.exe","b",false,false)
+        }
+        const manage=async()=>{
+            await Ephedrine.Actions.Run("WebModInstaller.exe", "--plugins")
         }
     </script>
 </body>
