@@ -115,7 +115,7 @@ Class MainWindow
                     End Select
                 'Action 2
                 Case "Plugin"
-                    Dim window As New Plugin(Message.Arg1, Message.Arg2, Message.Arg3)
+                    Dim window As New Plugin(Message.Arg1, Message.Arg2, Message.Arg3, Message.Arg4 = "ForceUpdate", Message.Arg5 = "InstallOnly")
                     window.Show()
                     '21 Start Plugin Success
                     Status.Content = "Plugin Started."

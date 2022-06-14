@@ -11,6 +11,7 @@ Public Class Plugin
         Public Property Program As String
         Public Property Argument As String
         Public Property Update As Boolean
+        Public Property Install As Boolean
     End Class
     Class PluginJson
         Public Property Name As String
@@ -21,7 +22,7 @@ Public Class Plugin
         Public Property Source As String
     End Class
     Dim CurrentPlugin As PluginInfo
-    Public Sub New(PluginName As String, PluginProgram As String, Argument As String, Optional ForceUpdate As Boolean = False)
+    Public Sub New(PluginName As String, PluginProgram As String, Argument As String, Optional ForceUpdate As Boolean = False, Optional InstallOnly As Boolean = False)
 
         ' 此调用是设计器所必需的。
         InitializeComponent()
@@ -32,7 +33,8 @@ Public Class Plugin
             .Name = PluginName,
             .Program = PluginProgram,
             .Argument = Argument,
-            .Update = ForceUpdate
+            .Update = ForceUpdate,
+            .Install = InstallOnly
         }
         Argu.Text = PluginProgram + " " + Argument
     End Sub
@@ -53,13 +55,27 @@ Public Class Plugin
         Process()
     End Sub
     Private Async Function Process() As Task
-        If Not File.Exists(PluginPath + "\Installed\" + CurrentPlugin.Name + ".json") Then
+        If Not File.Exists(PluginPath + "\Installed\" + CurrentPlugin.Name + ".json") Or CurrentPlugin.Update Then
             'Install Plugin
             Await Install(CurrentPlugin.Name)
         End If
-        Progress.IsIndeterminate = True
-        StatusLabel.Content = "Launching..."
+        If Not CurrentPlugin.Install Then
+            Progress.IsIndeterminate = True
+            StatusLabel.Content = "Running actions..."
+            Environment.SetEnvironmentVariable("Path", PluginPath + ";" + Environment.GetEnvironmentVariable("Path"))
+            Dim SI As New ProcessStartInfo(PluginPath + "\" + CurrentPlugin.Program, CurrentPlugin.Argument) With {
+                .CreateNoWindow = True,
+                .WindowStyle = ProcessWindowStyle.Hidden
+                }
+            Dim RunProcess = Diagnostics.Process.Start(SI)
+            Await RunProcess.WaitForExitAsync()
+        End If
+        StatusLabel.Content = "Actions done. Window close in 3 seconds."
+        Progress.IsIndeterminate = False
+        Await Task.Delay(3000)
+        Close()
     End Function
+
     Private Async Function Install(Name As String) As Task
         If Not Directory.Exists(PluginPath + "\Pending") Then
             Directory.CreateDirectory(PluginPath + "\Pending")
