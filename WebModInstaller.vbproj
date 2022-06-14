@@ -9,7 +9,7 @@
     <ApplicationIcon>drivers.ico</ApplicationIcon>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
     <Authors>Qinlili</Authors>
-    <Copyright>Qinlili 2022 OpenSource</Copyright>
+    <Copyright>Qinlili 2022 OpenSource MPLv2</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Version>1.0.0</Version>
     <StartupObject>WebModInstaller.Application</StartupObject>

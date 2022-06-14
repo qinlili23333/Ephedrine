@@ -1,8 +1,8 @@
 ﻿{
-	"StartPage": "https://gen2.qinlili.bid",
+	"StartPage": "http://127.0.0.1:8082",
 	"EnableContextMenu": true,
 	"Devtool": "Always",
 	"EnableWhitelist": true,
-	"Whitelist": ["gen2.qinlili.bid","qinlili.bid","545.qinlili.bid"],
+	"Whitelist": ["127.0.0.1","gen2.qinlili.bid","qinlili.bid","545.qinlili.bid"],
 	"Title": "Qinlili Demo"
 }

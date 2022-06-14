@@ -113,6 +113,16 @@ Class MainWindow
                         Case "save"
                             DownloadOnly(Link, Location)
                     End Select
+                'Action 2
+                Case "Plugin"
+                    Dim window As New Plugin(Message.Arg1, Message.Arg2, Message.Arg3)
+                    window.Show()
+                    '21 Start Plugin Success
+                    Status.Content = "Plugin Started."
+                    MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(21)")
+                    Progress.Value = 100
+                    Progress.IsIndeterminate = False
+                    IsBusy = False
                 'Action 3
                 Case "List"
                     Try
