@@ -6,6 +6,7 @@ Imports System.Text.Json
 Imports Microsoft.Web.WebView2.Core
 Imports System.Security.Cryptography
 Imports System.Windows.Forms
+Imports System.ComponentModel
 
 Class MainWindow
     Class Config
@@ -588,5 +589,11 @@ Class MainWindow
         Progress.IsIndeterminate = False
         Progress.Value = 100
         IsBusy = False
+    End Sub
+
+
+    Private Sub MainWindow_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        MainWeb.Dispose()
+        File.Delete("WebView2Loader.dll")
     End Sub
 End Class
