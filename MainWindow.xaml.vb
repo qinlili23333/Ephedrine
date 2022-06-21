@@ -12,6 +12,8 @@ Class MainWindow
     Class Config
         '"Internal" to use built in index.html, Or a specify web address Like "https://qinlili.bid"
         Public Property StartPage As String
+        'Progress will hide if set to true
+        Public Property HideProgress As Boolean
         'Right click will show default webview context menu if enabled
         Public Property EnableContextMenu As Boolean
         '"Always" to enable F12 under any circumstances, Or a specify command Like "--debugKey 1145141919810" when launch with this key F12 will be enabled
@@ -59,7 +61,6 @@ Class MainWindow
         If Not InternalConfig.Devtool = "Always" And Not InternalConfig.Devtool = Command() Then
             MainWeb.CoreWebView2.Settings.AreDevToolsEnabled = False
         End If
-        Status.Content = "Loading Web Page..."
         If InternalConfig.StartPage = "Internal" Then
             Dim reader As StreamReader = New StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.index.html"))
             Dim htmlString As String = Await reader.ReadToEndAsync()
@@ -72,6 +73,10 @@ Class MainWindow
     Private Sub ReadConfig()
         InternalConfig = JsonSerializer.Deserialize(Of Config)(Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.Config.json"))
         Title = InternalConfig.Title
+        Status.Content = "Loading Web Page..."
+        If InternalConfig.HideProgress Then
+            MainWeb.Margin = New Thickness(0, 0, 0, 0)
+        End If
     End Sub
     Private Sub MainWeb_NavigationStarting(sender As Object, e As CoreWebView2NavigationStartingEventArgs) Handles MainWeb.NavigationStarting
         Status.Content = "Loading Web Page..."
@@ -348,6 +353,9 @@ Class MainWindow
                     Progress.Value = 100
                     Progress.IsIndeterminate = False
                     IsBusy = False
+                'Action 10
+                Case "Exit"
+                    Close()
             End Select
         Else
             '-1 Busy

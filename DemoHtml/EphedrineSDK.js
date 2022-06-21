@@ -10,8 +10,8 @@ window.Ephedrine = {
     request: (action, arg1, arg2, arg3, arg4, arg5) => {
         window.chrome.webview.postMessage({ Action: action, Arg1: arg1, Arg2: arg2, Arg3: arg3, Arg4: arg4, Arg5: arg5 });
     },
-    processCode: code => {},
-    processResult: result => {},
+    processCode: code => { },
+    processResult: result => { },
     msgAsync: (action, arg1, arg2, arg3, arg4, arg5, forResult) => {
         return new Promise(resolve => {
             Ephedrine.request(action, arg1, arg2, arg3, arg4, arg5);
@@ -43,7 +43,7 @@ window.Ephedrine = {
     },
     Ready: !!window.chrome.webview,
     Actions: {
-        StartService: async(elevated) => {
+        StartService: async (elevated) => {
             switch (await Ephedrine.msgAsync("StartService", elevated ? "Admin" : "User")) {
                 case -1:
                     {
@@ -91,7 +91,7 @@ window.Ephedrine = {
                     }
             }
         },
-        Plugin: async(name, program, argument, forceUpdate, installOnly) => {
+        Plugin: async (name, program, argument, forceUpdate, installOnly) => {
             switch (await Ephedrine.msgAsync("Plugin", name, program, argument, forceUpdate ? "ForceUpdate" : "", installOnly ? "InstallOnly" : "")) {
                 case -1:
                     {
@@ -115,7 +115,7 @@ window.Ephedrine = {
                     };
             }
         },
-        List: async(path) => {
+        List: async (path) => {
             let result = await Ephedrine.msgAsync("List", path, null, null, null, null, true)
             switch (result.code) {
                 case -1:
@@ -154,7 +154,7 @@ window.Ephedrine = {
             }
         },
         Install: {
-            zip: async(link, location) => {
+            zip: async (link, location) => {
                 switch (await Ephedrine.msgAsync("Install", "zip", link, location)) {
                     case -1:
                         {
@@ -198,7 +198,7 @@ window.Ephedrine = {
                         }
                 }
             },
-            run: async(link, location, admin, argu) => {
+            run: async (link, location, admin, argu) => {
                 switch (await Ephedrine.msgAsync("Install", "run", link, location, admin ? "Admin" : "User", argu)) {
                     case -1:
                         {
@@ -242,7 +242,7 @@ window.Ephedrine = {
                         }
                 }
             },
-            save: async(link, name) => {
+            save: async (link, name) => {
                 switch (await Ephedrine.msgAsync("Install", "save", link, name)) {
                     case -1:
                         {
@@ -267,7 +267,7 @@ window.Ephedrine = {
                 }
             }
         },
-        Select: async(folder) => {
+        Select: async (folder) => {
             let result = await Ephedrine.msgAsync("Select", folder ? "Folder" : "File", null, null, null, null, true)
             switch (result.code) {
                 case -1:
@@ -305,7 +305,7 @@ window.Ephedrine = {
                     };
             }
         },
-        KillProcess: async(name) => {
+        KillProcess: async (name) => {
             switch (await Ephedrine.msgAsync("KillProcess", name.replace(".exe", ""))) {
                 case -1:
                     {
@@ -342,7 +342,7 @@ window.Ephedrine = {
 
             }
         },
-        Verify: async(method, file) => {
+        Verify: async (method, file) => {
             let result = await Ephedrine.msgAsync("Verify", method, file, null, null, null, true)
             switch (result.code) {
                 case -1:
@@ -391,7 +391,7 @@ window.Ephedrine = {
                     };
             }
         },
-        Run: async(program, argu, admin, intent) => {
+        Run: async (program, argu, admin, intent) => {
             switch (await Ephedrine.msgAsync("Run", program, argu, intent ? "Intent" : (admin ? "Admin" : "User"))) {
                 case -1:
                     {
@@ -426,7 +426,7 @@ window.Ephedrine = {
                     };
             }
         },
-        Delete: async(file) => {
+        Delete: async (file) => {
             switch (await Ephedrine.msgAsync("Delete", file)) {
                 case -1:
                     {
@@ -472,6 +472,9 @@ window.Ephedrine = {
                         }
                         break;
                     };
+            },
+            Exit: () => {
+                Ephedrine.msgAsync("Exit");
             }
         }
 
