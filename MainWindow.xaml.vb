@@ -1,12 +1,13 @@
-﻿Imports System.IO
+﻿Imports System.ComponentModel
+Imports System.Environment
+Imports System.IO
 Imports System.IO.Compression
 Imports System.Net
 Imports System.Reflection
-Imports System.Text.Json
-Imports Microsoft.Web.WebView2.Core
 Imports System.Security.Cryptography
+Imports System.Text.Json
 Imports System.Windows.Forms
-Imports System.ComponentModel
+Imports Microsoft.Web.WebView2.Core
 
 Class MainWindow
     Class Config
@@ -18,6 +19,8 @@ Class MainWindow
         Public Property EnableContextMenu As Boolean
         '"Always" to enable F12 under any circumstances, Or a specify command Like "--debugKey 1145141919810" when launch with this key F12 will be enabled
         Public Property Devtool As String
+        'Webview profile saving path, set to "Temp" if need to save in temp folder, same path will share profile in same domain
+        Public Property WvPath As String
         'Pages Not in whitelist will be opened in browser instead of in installer if enabled
         Public Property EnableWhitelist As Boolean
         'Domains that allowed to access in whitelist mode
@@ -50,9 +53,15 @@ Class MainWindow
             fs.Close()
             fs.Dispose()
         End If
-        Directory.CreateDirectory(Path.GetTempPath + "QinliliWebview2\")
-        Environment.SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", Path.GetTempPath + "QinliliWebview2\")
-        Dim webView2Environment = Await CoreWebView2Environment.CreateAsync(, Path.GetTempPath + "QinliliWebview2\Cache",)
+        If InternalConfig.WvPath = "Temp" Then
+            Directory.CreateDirectory(Path.GetTempPath + "QinliliWebview2\")
+            SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", Path.GetTempPath + "QinliliWebview2\")
+            Dim webView2Environment = Await CoreWebView2Environment.CreateAsync(, Path.GetTempPath + "QinliliWebview2\Cache",)
+        Else
+            Directory.CreateDirectory(GetFolderPath(SpecialFolder.ApplicationData) + "\QinliliWebview2\" + InternalConfig.WvPath)
+            SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", GetFolderPath(SpecialFolder.ApplicationData) + "\QinliliWebview2\" + InternalConfig.WvPath)
+            Dim webView2Environment = Await CoreWebView2Environment.CreateAsync(, GetFolderPath(SpecialFolder.ApplicationData) + "\QinliliWebview2\" + InternalConfig.WvPath,)
+        End If
         Await MainWeb.EnsureCoreWebView2Async()
         Progress.IsIndeterminate = False
         Progress.Value = 10
@@ -204,7 +213,7 @@ Class MainWindow
                                 .Title = "Select the game file.",
                                 .Multiselect = False,
                                 .RestoreDirectory = True,
-                                .InitialDirectory = Environment.CurrentDirectory
+                                .InitialDirectory = CurrentDirectory
                                 }
                             If fd.ShowDialog() = Forms.DialogResult.OK Then
                                 '41 Select Success
@@ -314,9 +323,9 @@ Class MainWindow
                         Status.Content = "Starting Service..."
                         Select Case Message.Arg1
                             Case "User"
-                                Service = Process.Start(Environment.ProcessPath, "--service")
+                                Service = Process.Start(ProcessPath, "--service")
                             Case "Admin"
-                                Dim info As New ProcessStartInfo(Environment.ProcessPath, "--service") With {
+                                Dim info As New ProcessStartInfo(ProcessPath, "--service") With {
                                     .UseShellExecute = True,
                                     .Verb = "runas"
                                 }
@@ -420,7 +429,7 @@ Class MainWindow
                                                                   If ex.Message.Contains("denied.") Then
                                                                       archive.Dispose()
                                                                       File.WriteAllText("InstallLocation", Location)
-                                                                      Dim info As New ProcessStartInfo(Environment.ProcessPath, "--unzip") With {
+                                                                      Dim info As New ProcessStartInfo(ProcessPath, "--unzip") With {
                     .UseShellExecute = True,
                     .Verb = "runas"
                 }

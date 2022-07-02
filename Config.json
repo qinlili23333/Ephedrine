@@ -3,7 +3,8 @@
 	"HideProgress": true,
 	"EnableContextMenu": false,
 	"Devtool": "Always",
+	"WvPath": "HLXM",
 	"EnableWhitelist": true,
-	"Whitelist": ["gen2.qinlili.bid","qinlili.bid"],
+	"Whitelist": [ "gen2.qinlili.bid", "qinlili.bid" ],
 	"Title": "Ephedrine Installer"
 }
