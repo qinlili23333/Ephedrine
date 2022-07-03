@@ -472,11 +472,10 @@ window.Ephedrine = {
                         }
                         break;
                     };
-            },
-            Exit: () => {
-                Ephedrine.msgAsync("Exit");
             }
+        },
+        Exit: () => {
+            Ephedrine.msgAsync("Exit");
         }
-
     }
 }
