@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WebModInstaller"
         xmlns:Wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf" x:Class="MainWindow"
         mc:Ignorable="d"
-        Title="Qinlili Mod Installer" Height="450" Width="800" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+        Title="Qinlili Mod Installer" Height="450" Width="800" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" WindowStyle="SingleBorderWindow" WindowStartupLocation="CenterScreen">
     <Grid  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
         <Wpf:WebView2 x:Name="MainWeb" Margin="0,15,0,0"/>

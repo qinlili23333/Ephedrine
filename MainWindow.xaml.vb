@@ -21,6 +21,10 @@ Class MainWindow
         Public Property Devtool As String
         'Webview profile saving path, set to "Temp" if need to save in temp folder, same path will share profile in same domain
         Public Property WvPath As String
+        'Hide Window Frame
+        Public Property HideFrame As Boolean
+        'Disable window resize
+        Public Property DisableResize As Boolean
         'Pages Not in whitelist will be opened in browser instead of in installer if enabled
         Public Property EnableWhitelist As Boolean
         'Domains that allowed to access in whitelist mode
@@ -44,8 +48,18 @@ Class MainWindow
     End Class
     Dim IsBusy As Boolean = False
     Dim Service As Process
-    Private Async Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+
+    Public Sub New()
+
+        ' 此调用是设计器所必需的。
+        InitializeComponent()
+
+        ' 在 InitializeComponent() 调用之后添加任何初始化。
+
         ReadConfig()
+    End Sub
+
+    Private Async Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         Status.Content = "Loading WebView2..."
         If Not File.Exists("WebView2Loader.dll") Then
             Dim fs As New FileStream("WebView2Loader.dll", FileMode.Create)
@@ -85,6 +99,12 @@ Class MainWindow
         Status.Content = "Loading Web Page..."
         If InternalConfig.HideProgress Then
             MainWeb.Margin = New Thickness(0, 0, 0, 0)
+        End If
+        If InternalConfig.HideFrame Then
+            Me.WindowStyle = WindowStyle.None
+        End If
+        If InternalConfig.DisableResize Then
+            Me.ResizeMode = ResizeMode.NoResize
         End If
     End Sub
     Private Sub MainWeb_NavigationStarting(sender As Object, e As CoreWebView2NavigationStartingEventArgs) Handles MainWeb.NavigationStarting

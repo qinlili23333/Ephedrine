@@ -4,6 +4,8 @@
 	"EnableContextMenu": false,
 	"Devtool": "Always",
 	"WvPath": "HLXM",
+	"HideFrame": true,
+	"DisableResize": true,
 	"EnableWhitelist": true,
 	"Whitelist": [ "gen2.qinlili.bid", "qinlili.bid" ],
 	"Title": "Ephedrine Installer"
