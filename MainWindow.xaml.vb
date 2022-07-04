@@ -23,7 +23,7 @@ Class MainWindow
         Public Property WvPath As String
         'Hide Window Frame
         Public Property HideFrame As Boolean
-        'Enable transparent webview if set to true
+        'Enable transparent webview if set to true. Must enable HideFrame+DisableResize first.
         Public Property AllowTransparency As Boolean
         'Disable window resize
         Public Property DisableResize As Boolean
@@ -105,6 +105,9 @@ Class MainWindow
             Status.Visibility = Visibility.Hidden
         End If
         If InternalConfig.AllowTransparency Then
+            Dim WChrome = New Shell.WindowChrome
+            WChrome.GlassFrameThickness = New Thickness(-1)
+            Shell.WindowChrome.SetWindowChrome(Me, WChrome)
             MainWeb.DefaultBackgroundColor = System.Drawing.Color.Transparent
         End If
         If InternalConfig.HideFrame Then

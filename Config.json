@@ -5,7 +5,7 @@
 	"Devtool": "Always",
 	"WvPath": "HLXM",
 	"HideFrame": true,
-	"AllowTransparency": false,
+	"AllowTransparency": true,
 	"DisableResize": true,
 	"EnableWhitelist": true,
 	"Whitelist": [ "glacier.qinlili.bid", "127.0.0.1" ],
