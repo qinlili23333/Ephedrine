@@ -5,8 +5,9 @@
 	"Devtool": "Always",
 	"WvPath": "HLXM",
 	"HideFrame": true,
+	"AllowTransparency": false,
 	"DisableResize": true,
 	"EnableWhitelist": true,
-	"Whitelist": [ "gen2.qinlili.bid", "qinlili.bid" ],
+	"Whitelist": [ "glacier.qinlili.bid", "127.0.0.1" ],
 	"Title": "Ephedrine Installer"
 }
