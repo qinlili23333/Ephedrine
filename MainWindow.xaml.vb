@@ -50,7 +50,7 @@ Class MainWindow
     End Class
     Dim IsBusy As Boolean = False
     Dim Service As Process
-
+    Dim webView2Environment As CoreWebView2Environment
     Public Sub New()
 
         ' 此调用是设计器所必需的。
@@ -72,11 +72,11 @@ Class MainWindow
         If InternalConfig.WvPath = "Temp" Then
             Directory.CreateDirectory(Path.GetTempPath + "QinliliWebview2\")
             SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", Path.GetTempPath + "QinliliWebview2\")
-            Dim webView2Environment = Await CoreWebView2Environment.CreateAsync(, Path.GetTempPath + "QinliliWebview2\Cache",)
+            webView2Environment = Await CoreWebView2Environment.CreateAsync(, Path.GetTempPath + "QinliliWebview2\Cache",)
         Else
             Directory.CreateDirectory(GetFolderPath(SpecialFolder.ApplicationData) + "\QinliliWebview2\" + InternalConfig.WvPath)
             SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", GetFolderPath(SpecialFolder.ApplicationData) + "\QinliliWebview2\" + InternalConfig.WvPath)
-            Dim webView2Environment = Await CoreWebView2Environment.CreateAsync(, GetFolderPath(SpecialFolder.ApplicationData) + "\QinliliWebview2\" + InternalConfig.WvPath,)
+            webView2Environment = Await CoreWebView2Environment.CreateAsync(, GetFolderPath(SpecialFolder.ApplicationData) + "\QinliliWebview2\" + InternalConfig.WvPath,)
         End If
         Await MainWeb.EnsureCoreWebView2Async()
         Progress.IsIndeterminate = False
@@ -641,6 +641,10 @@ Class MainWindow
 
     Private Sub MainWindow_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         MainWeb.Dispose()
-        File.Delete("WebView2Loader.dll")
+        Try
+            File.Delete("WebView2Loader.dll")
+        Catch ex As Exception
+
+        End Try
     End Sub
 End Class
