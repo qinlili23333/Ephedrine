@@ -50,7 +50,7 @@ Class MainWindow
     End Class
     Dim IsBusy As Boolean = False
     Dim Service As Process
-    Dim webView2Environment As CoreWebView2Environment
+
     Public Sub New()
 
         ' 此调用是设计器所必需的。
@@ -72,11 +72,11 @@ Class MainWindow
         If InternalConfig.WvPath = "Temp" Then
             Directory.CreateDirectory(Path.GetTempPath + "QinliliWebview2\")
             SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", Path.GetTempPath + "QinliliWebview2\")
-            webView2Environment = Await CoreWebView2Environment.CreateAsync(, Path.GetTempPath + "QinliliWebview2\Cache",)
+            Dim webView2Environment = Await CoreWebView2Environment.CreateAsync(, Path.GetTempPath + "QinliliWebview2\Cache",)
         Else
             Directory.CreateDirectory(GetFolderPath(SpecialFolder.ApplicationData) + "\QinliliWebview2\" + InternalConfig.WvPath)
             SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", GetFolderPath(SpecialFolder.ApplicationData) + "\QinliliWebview2\" + InternalConfig.WvPath)
-            webView2Environment = Await CoreWebView2Environment.CreateAsync(, GetFolderPath(SpecialFolder.ApplicationData) + "\QinliliWebview2\" + InternalConfig.WvPath,)
+            Dim webView2Environment = Await CoreWebView2Environment.CreateAsync(, GetFolderPath(SpecialFolder.ApplicationData) + "\QinliliWebview2\" + InternalConfig.WvPath,)
         End If
         Await MainWeb.EnsureCoreWebView2Async()
         Progress.IsIndeterminate = False
@@ -130,8 +130,13 @@ Class MainWindow
         Progress.Value = 25
     End Sub
     Private Sub MainWeb_NavigationCompleted(sender As Object, e As CoreWebView2NavigationCompletedEventArgs) Handles MainWeb.NavigationCompleted
-        Status.Content = "Ready."
-        Progress.Value = 100
+        If e.IsSuccess Then
+            Status.Content = "Ready."
+            Progress.Value = 100
+        Else
+            Status.Content = "Retrying..."
+            MainWeb.Reload()
+        End If
     End Sub
 
     Private Sub MainWeb_WebMessageReceived(sender As Object, e As CoreWebView2WebMessageReceivedEventArgs) Handles MainWeb.WebMessageReceived
