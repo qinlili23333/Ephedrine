@@ -82,6 +82,7 @@ Class MainWindow
         Progress.IsIndeterminate = False
         Progress.Value = 10
         MainWeb.CoreWebView2.Settings.IsStatusBarEnabled = False
+        MainWeb.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = False
         MainWeb.CoreWebView2.Settings.AreDefaultContextMenusEnabled = InternalConfig.EnableContextMenu
         If Not InternalConfig.Devtool = "Always" And Not InternalConfig.Devtool = Command() Then
             MainWeb.CoreWebView2.Settings.AreDevToolsEnabled = False
@@ -119,9 +120,11 @@ Class MainWindow
     End Sub
     Private Sub MainWeb_NavigationStarting(sender As Object, e As CoreWebView2NavigationStartingEventArgs) Handles MainWeb.NavigationStarting
         Status.Content = "Loading Web Page..."
-        If InternalConfig.EnableWhitelist And Not ((New Uri(e.Uri).DnsSafeHost) = "") And Not InternalConfig.Whitelist.Contains(New Uri(e.Uri).DnsSafeHost) Then
-            e.Cancel = True
-            Interaction.Shell("cmd.exe /c start " + e.Uri + " & exit", AppWinStyle.Hide)
+        If Not e.Uri.StartsWith("data") Then
+            If InternalConfig.EnableWhitelist And Not InternalConfig.Whitelist.Contains(New Uri(e.Uri).DnsSafeHost) Then
+                e.Cancel = True
+                Interaction.Shell("cmd.exe /c start " + e.Uri + " & exit", AppWinStyle.Hide)
+            End If
         End If
         Progress.Value = 10
     End Sub
