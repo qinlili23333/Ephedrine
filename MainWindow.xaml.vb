@@ -11,6 +11,9 @@ Imports Microsoft.Web.WebView2.Core
 
 Class MainWindow
     Class Config
+        'Window height and width, only integer is supported
+        Public Property Height As Integer
+        Public Property Width As Integer
         '"Internal" to use built in index.html, Or a specify web address Like "https://qinlili.bid"
         Public Property StartPage As String
         'Progress will hide if set to true
@@ -101,6 +104,8 @@ Class MainWindow
     Private Sub ReadConfig()
         InternalConfig = JsonSerializer.Deserialize(Of Config)(Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.Config.json"))
         Title = InternalConfig.Title
+        Me.Width = InternalConfig.Width
+        Me.Height = InternalConfig.Height
         Status.Content = "Loading Web Page..."
         If InternalConfig.HideProgress Then
             MainWeb.Margin = New Thickness(0, 0, 0, 0)

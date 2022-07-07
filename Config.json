@@ -1,7 +1,9 @@
 ﻿{
+	"Height": 450,
+	"Width": 800,
 	"StartPage": "Internal",
 	"HideProgress": true,
-	"EnableContextMenu": false,
+	"EnableContextMenu": true,
 	"Devtool": "Always",
 	"WvPath": "HLXM",
 	"HideFrame": true,
@@ -9,5 +11,5 @@
 	"DisableResize": true,
 	"EnableWhitelist": true,
 	"Whitelist": [ "glacier.qinlili.bid", "127.0.0.1" ],
-	"Title": "Ephedrine Installer"
+	"Title": "红楼续梦京华风云"
 }
