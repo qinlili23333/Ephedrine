@@ -50,6 +50,7 @@ Class MainWindow
     End Class
     Dim IsBusy As Boolean = False
     Dim Service As Process
+    Dim PreCachedErrorHtml As String
 
     Public Sub New()
 
@@ -82,6 +83,7 @@ Class MainWindow
         Progress.IsIndeterminate = False
         Progress.Value = 10
         MainWeb.CoreWebView2.Settings.IsStatusBarEnabled = False
+        MainWeb.CoreWebView2.Settings.IsBuiltInErrorPageEnabled = False
         MainWeb.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = False
         MainWeb.CoreWebView2.Settings.AreDefaultContextMenusEnabled = InternalConfig.EnableContextMenu
         If Not InternalConfig.Devtool = "Always" And Not InternalConfig.Devtool = Command() Then
@@ -117,7 +119,12 @@ Class MainWindow
         If InternalConfig.DisableResize Then
             Me.ResizeMode = ResizeMode.NoResize
         End If
+        CacheError()
     End Sub
+    Private Async Function CacheError() As Task
+        Dim reader As StreamReader = New StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.error.html"))
+        PreCachedErrorHtml = Await reader.ReadToEndAsync()
+    End Function
     Private Sub MainWeb_NavigationStarting(sender As Object, e As CoreWebView2NavigationStartingEventArgs) Handles MainWeb.NavigationStarting
         Status.Content = "Loading Web Page..."
         If Not e.Uri.StartsWith("data") Then
@@ -138,9 +145,11 @@ Class MainWindow
             Progress.Value = 100
         Else
             Status.Content = "Error."
-            Dim reader As StreamReader = New StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.error.html"))
-            Dim htmlString As String = Await reader.ReadToEndAsync()
-            MainWeb.CoreWebView2.NavigateToString(htmlString)
+            If PreCachedErrorHtml IsNot Nothing Then
+            Else
+                Await CacheError()
+            End If
+            MainWeb.CoreWebView2.NavigateToString(PreCachedErrorHtml)
         End If
     End Sub
 
