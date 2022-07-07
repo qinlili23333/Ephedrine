@@ -132,13 +132,15 @@ Class MainWindow
     Private Sub MainWeb_ContentLoading(sender As Object, e As CoreWebView2ContentLoadingEventArgs) Handles MainWeb.ContentLoading
         Progress.Value = 25
     End Sub
-    Private Sub MainWeb_NavigationCompleted(sender As Object, e As CoreWebView2NavigationCompletedEventArgs) Handles MainWeb.NavigationCompleted
+    Private Async Sub MainWeb_NavigationCompleted(sender As Object, e As CoreWebView2NavigationCompletedEventArgs) Handles MainWeb.NavigationCompleted
         If e.IsSuccess Then
             Status.Content = "Ready."
             Progress.Value = 100
         Else
-            Status.Content = "Retrying..."
-            MainWeb.Reload()
+            Status.Content = "Error."
+            Dim reader As StreamReader = New StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.error.html"))
+            Dim htmlString As String = Await reader.ReadToEndAsync()
+            MainWeb.CoreWebView2.NavigateToString(htmlString)
         End If
     End Sub
 
