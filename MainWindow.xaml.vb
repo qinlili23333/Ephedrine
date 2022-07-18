@@ -149,12 +149,14 @@ Class MainWindow
             Status.Content = "Ready."
             Progress.Value = 100
         Else
-            Status.Content = "Error."
-            If PreCachedErrorHtml IsNot Nothing Then
-            Else
-                Await CacheError()
+            If Not e.WebErrorStatus = 14 Then
+                Status.Content = "Error."
+                If PreCachedErrorHtml IsNot Nothing Then
+                Else
+                    Await CacheError()
+                End If
+                MainWeb.CoreWebView2.NavigateToString(PreCachedErrorHtml)
             End If
-            MainWeb.CoreWebView2.NavigateToString(PreCachedErrorHtml)
         End If
     End Sub
 
@@ -671,4 +673,5 @@ Class MainWindow
 
         End Try
     End Sub
+
 End Class
