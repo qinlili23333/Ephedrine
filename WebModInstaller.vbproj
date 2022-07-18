@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <None Remove="Config.json" />
+    <None Remove="drag.js" />
     <None Remove="drivers.ico" />
     <None Remove="error.html" />
     <None Remove="index.html" />
@@ -36,6 +37,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Config.json" />
+    <EmbeddedResource Include="drag.js" />
     <EmbeddedResource Include="drivers.ico" />
     <EmbeddedResource Include="error.html" />
     <EmbeddedResource Include="index.html" />

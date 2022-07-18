@@ -7,6 +7,7 @@ Imports System.Reflection
 Imports System.Security.Cryptography
 Imports System.Text.Json
 Imports System.Windows.Forms
+Imports System.Runtime.InteropServices
 Imports Microsoft.Web.WebView2.Core
 
 Class MainWindow
@@ -54,6 +55,7 @@ Class MainWindow
     Dim IsBusy As Boolean = False
     Dim Service As Process
     Dim PreCachedErrorHtml As String
+    Dim PreCachedDragJS As String
 
     Public Sub New()
 
@@ -129,6 +131,8 @@ Class MainWindow
     Private Async Function CacheError() As Task
         Dim reader As StreamReader = New StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.error.html"))
         PreCachedErrorHtml = Await reader.ReadToEndAsync()
+        reader = New StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.drag.js"))
+        PreCachedDragJS = Await reader.ReadToEndAsync()
     End Function
     Private Sub MainWeb_NavigationStarting(sender As Object, e As CoreWebView2NavigationStartingEventArgs) Handles MainWeb.NavigationStarting
         Status.Content = "Loading Web Page..."
@@ -158,6 +162,10 @@ Class MainWindow
                 MainWeb.CoreWebView2.NavigateToString(PreCachedErrorHtml)
             End If
         End If
+
+        Dim EventForwarder = New EventForwarder(Process.GetCurrentProcess().MainWindowHandle)
+        MainWeb.CoreWebView2.AddHostObjectToScript("eventForwarder", EventForwarder)
+        Await MainWeb.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(PreCachedDragJS)
     End Sub
 
     Private Sub MainWeb_WebMessageReceived(sender As Object, e As CoreWebView2WebMessageReceivedEventArgs) Handles MainWeb.WebMessageReceived
@@ -673,5 +681,33 @@ Class MainWindow
 
         End Try
     End Sub
+
+
+
+    <ClassInterface(ClassInterfaceType.AutoDual)>
+    <ComVisible(True)>
+    Public Class EventForwarder
+        Public Const WM_NCLBUTTONDOWN As Integer = &HA1
+        Public Const HT_CAPTION As Integer = &H2
+
+        <DllImport("user32.dll")>
+        Public Shared Function SendMessage(ByVal hWnd As IntPtr, ByVal Msg As Integer, ByVal wParam As Integer, ByVal lParam As Integer) As Integer
+        End Function
+        <DllImport("user32.dll")>
+        Public Shared Function ReleaseCapture() As Boolean
+        End Function
+
+        Private ReadOnly target As IntPtr
+
+        Public Sub New(ByVal target As IntPtr)
+            Me.target = target
+        End Sub
+
+        Public Sub MouseDownDrag()
+            ReleaseCapture()
+            SendMessage(target, WM_NCLBUTTONDOWN, HT_CAPTION, 0)
+        End Sub
+    End Class
+
 
 End Class
