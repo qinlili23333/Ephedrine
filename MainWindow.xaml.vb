@@ -429,6 +429,12 @@ Class MainWindow
                 'Action 10
                 Case "Exit"
                     IsBusy = False
+                    MainWeb.Dispose()
+                    Try
+                        File.Delete("WebView2Loader.dll")
+                    Catch ex As Exception
+
+                    End Try
                     Close()
                 'Action 11
                 Case "Minimize"

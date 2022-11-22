@@ -39,12 +39,12 @@ Public Class Plugin
         Argu.Text = PluginProgram + " " + Argument
     End Sub
 
-    Private Sub Plugin_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+    Private Async Sub Plugin_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         If Not Directory.Exists(PluginPath) Then
             Dim result As DialogResult = MessageBox.Show("Ephedrine plugins can add more functions for installer, such as diff patcher or 7z extractor. However plugins will store files permenantly on your disk which will use your disk space. You can manage plugins by launch any Ephedrine installer with `--plugins`. Click `Yes` if you want to use plugins.",
                               "Ephedrine",
                               MessageBoxButtons.YesNo)
-            If Not result Then
+            If result = System.Windows.Forms.DialogResult.OK Then
                 Close()
             End If
             Directory.CreateDirectory(PluginPath)
@@ -52,7 +52,7 @@ Public Class Plugin
         If Not Directory.Exists(PluginPath + "\Installed") Then
             Directory.CreateDirectory(PluginPath + "\Installed")
         End If
-        Process()
+        Await Process()
     End Sub
     Private Async Function Process() As Task
         If Not File.Exists(PluginPath + "\Installed\" + CurrentPlugin.Name + ".json") Or CurrentPlugin.Update Then
