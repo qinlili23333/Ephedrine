@@ -69,6 +69,12 @@ Class MainWindow
 
     Private Async Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         Status.Content = "Loading WebView2..."
+        If Not File.Exists("WebView2Loader.dll") Then
+            Dim fs As New FileStream("WebView2Loader.dll", FileMode.Create)
+            Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.WebView2Loader.dll").CopyTo(fs)
+            fs.Close()
+            fs.Dispose()
+        End If
         If InternalConfig.WvPath = "Temp" Then
             Directory.CreateDirectory(Path.GetTempPath + "QinliliWebview2\")
             SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", Path.GetTempPath + "QinliliWebview2\")
