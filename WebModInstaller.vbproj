@@ -36,7 +36,6 @@
     <None Remove="drivers.ico" />
     <None Remove="error.html" />
     <None Remove="index.html" />
-    <None Remove="WebView2Loader.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,7 +44,6 @@
     <EmbeddedResource Include="drivers.ico" />
     <EmbeddedResource Include="error.html" />
     <EmbeddedResource Include="index.html" />
-    <EmbeddedResource Include="WebView2Loader.dll" />
   </ItemGroup>
 
   <ItemGroup>
