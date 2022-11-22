@@ -44,8 +44,9 @@ Public Class Plugin
             Dim result As DialogResult = MessageBox.Show("Ephedrine plugins can add more functions for installer, such as diff patcher or 7z extractor. However plugins will store files permenantly on your disk which will use your disk space. You can manage plugins by launch any Ephedrine installer with `--plugins`. Click `Yes` if you want to use plugins.",
                               "Ephedrine",
                               MessageBoxButtons.YesNo)
-            If result = System.Windows.Forms.DialogResult.OK Then
+            If Not result = System.Windows.Forms.DialogResult.Yes Then
                 Close()
+                Return
             End If
             Directory.CreateDirectory(PluginPath)
         End If
