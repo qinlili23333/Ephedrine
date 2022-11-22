@@ -7,11 +7,16 @@ window.Ephedrine = {
         console.log(result);
         Ephedrine.processResult(result);
     },
+    msgProgress: percent => {
+        console.log(percent);
+        Ephedrine.processProgress(percent);
+    },
     request: (action, arg1, arg2, arg3, arg4, arg5) => {
         window.chrome.webview.postMessage({ Action: action, Arg1: arg1, Arg2: arg2, Arg3: arg3, Arg4: arg4, Arg5: arg5 });
     },
     processCode: code => { },
     processResult: result => { },
+    processProgress: percent => { },
     msgAsync: (action, arg1, arg2, arg3, arg4, arg5, forResult) => {
         return new Promise(resolve => {
             Ephedrine.request(action, arg1, arg2, arg3, arg4, arg5);
@@ -476,6 +481,9 @@ window.Ephedrine = {
         },
         Exit: () => {
             Ephedrine.msgAsync("Exit");
+        },
+        Minimize: () => {
+            Ephedrine.msgAsync("Minimize");
         }
     }
 }

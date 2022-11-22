@@ -33,13 +33,14 @@
 
 <body style="margin: 0;padding: 0;overflow:hidden;">
     <div
-        style="width:80vw;height:80vh;position:absolute;top:10vh;left:10vw;background-color: rgba(255,255,255,0.8);box-shadow:0px 2px 10px 0px black;border-radius:8px;padding:10vh;">
+        style="-webkit-app-region: drag;width:80vw;height:80vh;position:absolute;top:10vh;left:10vw;background-color: rgba(255,255,255,0.8);box-shadow:0px 2px 10px 0px black;border-radius:8px;padding:10vh;">
         <H1 style="margin: 0px;">页面加载失败！</H1>
         <H3 style="margin:8px;">可能是设备网络问题，也可能是服务器中断</H3>
         <H5 style="margin:4px;">别急 --DJGun</H5>
-        <H6 style="margin:4px;">我们正在为你检测网络...</H6>
+        <H6 id="detect" style="margin:4px;">我们正在为你检测网络...</H6>
+        <div id="trace"></div>
         <div
-            style="display:flex;position:absolute;width:100%;height:10vh;bottom:0vh;left:0vw;border-radius: 0 0 8px 8px;overflow: hidden;">
+            style="-webkit-app-region: no-drag;display:flex;position:absolute;width:100%;height:10vh;bottom:0vh;left:0vw;border-radius: 0 0 8px 8px;overflow: hidden;">
             <span class="btn" onclick="retry(this)">重试</span>
             <span class="btn" onclick="openSetting();">设置网络</span>
             <span class="btn"
@@ -55,7 +56,56 @@
             history.go(-1);
         };
         (async () => {
-
+            let status = document.getElementById("detect");
+            let trace = document.getElementById("trace");
+            if (!navigator.onLine) {
+                status.innerText = "设备未连接网络"
+                document.getElementById("icon").style.display = "none";
+                return;
+            }
+            await fetch("https://www.cloudflare.com/?ForceNoCache=1", { method: "HEAD", mode: "no-cors" }).then(() => {
+                let info = document.createElement("p");
+                document.getElementById("trace").appendChild(info);
+                info.innerText = "Cloudflare连接成功"
+                info.style.color = "green";
+            }).catch(() => {
+                let info = document.createElement("p");
+                document.getElementById("trace").appendChild(info);
+                info.innerText = "Cloudflare连接失败"
+                info.style.color = "red";
+                document.getElementById("icon").style.display = "none";
+                status.innerText = "请检查和Cloudflare的连接，可能是内网占用1.1.1.1导致";
+                return false;
+            });
+            await fetch("https://qinlili.bid/?ForceNoCache=1", { method: "HEAD", mode: "no-cors" }).then(() => {
+                let info = document.createElement("p");
+                document.getElementById("trace").appendChild(info);
+                info.innerText = "琴梨梨的小站连接成功"
+                info.style.color = "green";
+            }).catch(() => {
+                let info = document.createElement("p");
+                document.getElementById("trace").appendChild(info);
+                info.innerText = "琴梨梨的小站连接失败"
+                info.style.color = "red";
+                document.getElementById("icon").style.display = "none";
+                status.innerText = "请检查是否拦截琴梨梨的域名，你的网络可能存在DNS污染或SNI阻断";
+                return false;
+            });
+            await fetch("https://glacier.qinlili.bid/?ForceNoCache=1", { method: "HEAD", mode: "no-cors" }).then(() => {
+                let info = document.createElement("p");
+                document.getElementById("trace").appendChild(info);
+                info.innerText = "Glacire Lab连接成功"
+                info.style.color = "green";
+                status.innerText = "似乎不是网络问题，请截图反馈";
+                return false;
+            }).catch(() => {
+                let info = document.createElement("p");
+                document.getElementById("trace").appendChild(info);
+                info.innerText = "Glacire Lab连接失败"
+                info.style.color = "red";
+                status.innerText = "试试更换一个节点或许有所帮助";
+                return false;
+            });
         })()
     </script>
 </body>

@@ -428,7 +428,12 @@ Class MainWindow
                     IsBusy = False
                 'Action 10
                 Case "Exit"
+                    IsBusy = False
                     Close()
+                'Action 11
+                Case "Minimize"
+                    IsBusy = False
+                    WindowState = WindowState.Minimized
             End Select
         Else
             '-1 Busy
@@ -568,6 +573,7 @@ Class MainWindow
         Dim DownloadClient As New WebClient
         AddHandler DownloadClient.DownloadProgressChanged, (Sub(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs)
                                                                 Progress.Value = e.ProgressPercentage
+                                                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgProgress(" + e.ProgressPercentage.ToString() + ")")
                                                             End Sub)
         AddHandler DownloadClient.DownloadFileCompleted, (Sub()
                                                               '15 Download Success Without Verification
@@ -584,6 +590,7 @@ Class MainWindow
         Dim DownloadClient As New WebClient
         AddHandler DownloadClient.DownloadProgressChanged, (Sub(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs)
                                                                 Progress.Value = e.ProgressPercentage
+                                                                MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgProgress(" + e.ProgressPercentage.ToString() + ")")
                                                             End Sub)
         AddHandler DownloadClient.DownloadFileCompleted, (Sub()
                                                               Dim RunProc As Process
@@ -610,6 +617,10 @@ Class MainWindow
                                         }
                                                                       Try
                                                                           RunProc = Process.Start(info)
+                                                                          Status.Content = "Run Patch Success."
+                                                                          '16 Download And Run Success 
+                                                                          MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(16)")
+                                                                          IsBusy = False
                                                                       Catch ex As Exception
                                                                           MsgBox("Need administrator permission to run service.",, "Error")
                                                                           Status.Content = "Administrator Permission Denied."

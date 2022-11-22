@@ -5,8 +5,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
         if (appRegion === 'drag') {
             chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag();
-            evt.preventDefault();
-            evt.stopPropagation();
+            //evt.preventDefault();
+            //evt.stopPropagation();
         }
     });
 });
