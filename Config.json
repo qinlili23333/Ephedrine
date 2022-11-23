@@ -3,13 +3,13 @@
 	"Width": 800,
 	"StartPage": "Internal",
 	"HideProgress": true,
-	"EnableContextMenu": true,
-	"Devtool": "Always",
+	"EnableContextMenu": false,
+	"Devtool": "--debug",
 	"WvPath": "HLXM",
 	"HideFrame": true,
 	"AllowTransparency": true,
 	"DisableResize": true,
 	"EnableWhitelist": true,
-	"Whitelist": [ "glacier.qinlili.bid", "127.0.0.1" ],
+	"Whitelist": [ "glacier.qinlili.bid"],
 	"Title": "红楼续梦-琴梨梨"
 }

@@ -197,11 +197,11 @@ Class MainWindow
                     Dim window As New Plugin(Message.Arg1, Message.Arg2, Message.Arg3, Message.Arg4 = "ForceUpdate", Message.Arg5 = "InstallOnly")
                     window.Show()
                     '21 Start Plugin Success
+                    IsBusy = False
                     Status.Content = "Plugin Started."
                     MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(21)")
                     Progress.Value = 100
                     Progress.IsIndeterminate = False
-                    IsBusy = False
                 'Action 3
                 Case "List"
                     Try
@@ -234,19 +234,20 @@ Class MainWindow
                         Next
                         Convert.ToBase64String(Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(fiInfo)))
                         '31 List Success
+                        IsBusy = False
                         Status.Content = "List Folder Success."
                         MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(31)")
                         MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('" + Convert.ToBase64String(Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(fiInfo))) + "')")
                     Catch ex As Exception
                         File.WriteAllTextAsync("Error.log", ex.ToString)
                         '30 List Failed
+                        IsBusy = False
                         Status.Content = "List Folder Failed."
                         MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(30)")
                         MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('')")
                     End Try
                     Progress.Value = 100
                     Progress.IsIndeterminate = False
-                    IsBusy = False
                 'Action 4
                 Case "Select"
                     Select Case Message.Arg1
@@ -258,18 +259,19 @@ Class MainWindow
                             }
                             If f.ShowDialog() = Forms.DialogResult.OK Then
                                 '41 Select Success
+                                IsBusy = False
                                 Status.Content = "Select Folder Success."
                                 MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(41)")
                                 MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('" + f.SelectedPath.Replace("\", "\\") + "')")
                             Else
                                 '40 Select Canceled
+                                IsBusy = False
                                 Status.Content = "Select Folder Canceled."
                                 MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(40)")
                                 MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('')")
                             End If
                             Progress.Value = 100
                             Progress.IsIndeterminate = False
-                            IsBusy = False
                         Case "File"
                             Dim fd As New OpenFileDialog() With {
                                 .CheckFileExists = True,
@@ -281,18 +283,19 @@ Class MainWindow
                                 }
                             If fd.ShowDialog() = Forms.DialogResult.OK Then
                                 '41 Select Success
+                                IsBusy = False
                                 Status.Content = "Select File Success."
                                 MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(41)")
                                 MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('" + fd.FileName.Replace("\", "\\") + "')")
                             Else
                                 '40 Select Canceled
+                                IsBusy = False
                                 Status.Content = "Select File Canceled."
                                 MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(40)")
                                 MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('')")
                             End If
                             Progress.Value = 100
                             Progress.IsIndeterminate = False
-                            IsBusy = False
                     End Select
                 'Action 5
                 Case "Delete"
@@ -301,20 +304,22 @@ Class MainWindow
                             File.Delete(Message.Arg1)
                             Status.Content = "Delete Success."
                             '51 Delete Success
+                            IsBusy = False
                             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(51)")
                         Catch ex As Exception
                             Status.Content = "Delete Fail."
                             '52 Delete Fail
+                            IsBusy = False
                             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(52)")
                         End Try
                     Else
                         Status.Content = "File Not Found."
                         '50 File Not Found
+                        IsBusy = False
                         MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(50)")
                     End If
                     Progress.Value = 100
                     Progress.IsIndeterminate = False
-                    IsBusy = False
                 'Action 6
                 Case "Run"
                     Try
@@ -332,27 +337,30 @@ Class MainWindow
                                 Interaction.Shell("cmd.exe /c start " + Message.Arg1 + " & exit", AppWinStyle.Hide)
                         End Select
                         '61 Run Success
+                        IsBusy = False
                         MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(61)")
                         Status.Content = "Start Process Success."
                     Catch ex As Exception
                         If ex.Message.Contains("The requested operation requires elevation.") Then
                             '62 No Permission
+                            IsBusy = False
                             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(62)")
                             Status.Content = "Require Elevation."
                         ElseIf ex.Message.Contains("The system cannot find the file specified.") Then
                             '63 No File
+                            IsBusy = False
                             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(63)")
                             Status.Content = "Program Not Found."
                         Else
                             File.WriteAllTextAsync("Error.log", ex.ToString)
                             '60 Run Fail
+                            IsBusy = False
                             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(60)")
                             Status.Content = "Start Process Fail."
                         End If
                     End Try
                     Progress.Value = 100
                     Progress.IsIndeterminate = False
-                    IsBusy = False
                 'Action 7
                 Case "KillProcess"
                     Dim Proc = Process.GetProcessesByName(Message.Arg1)
@@ -362,10 +370,12 @@ Class MainWindow
                         Next
                         Status.Content = "Kill Process Success."
                         '71 Kill Success
+                        IsBusy = False
                         MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(71)")
                     Else
                         Status.Content = "No Process Found."
                         '70 Nothing To Kill
+                        IsBusy = False
                         MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(70)")
                     End If
                     Progress.Value = 100
@@ -408,6 +418,7 @@ Class MainWindow
                         End Select
                         If Service IsNot Nothing Then
                             '91 Start Success
+                            IsBusy = False
                             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(91)")
                         Else
                             MsgBox("Fail to start service. Check if antivirus software stop it.",, "Error")
@@ -419,13 +430,13 @@ Class MainWindow
                             MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(90)")
                         End If
                     Else
+                        IsBusy = False
                         '93 Duplicate Service
                         MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(93)")
                     End If
                     Status.Content = "Ready."
                     Progress.Value = 100
                     Progress.IsIndeterminate = False
-                    IsBusy = False
                 'Action 10
                 Case "Exit"
                     IsBusy = False
@@ -476,10 +487,10 @@ Class MainWindow
                                                               Catch
                                                                   MsgBox("Failed to open patch file. Check your internet connection or contact with patch creator.",, "Error")
                                                                   '10 Corrupt Patch
+                                                                  IsBusy = False
                                                                   MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(10)")
                                                                   Progress.Value = 100
                                                                   Status.Content = "Installation Failed : Corrupt Patch."
-                                                                  IsBusy = False
                                                                   Exit Sub
                                                               End Try
                                                               Try
@@ -498,8 +509,8 @@ Class MainWindow
                                                                   Progress.Value = 100
                                                                   Status.Content = "Success Installed Patch."
                                                                   '11 Success Zip Patch
-                                                                  MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(11)")
                                                                   IsBusy = False
+                                                                  MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(11)")
                                                               Catch ex As Exception
                                                                   If ex.Message.Contains("denied.") Then
                                                                       archive.Dispose()
@@ -533,14 +544,18 @@ Class MainWindow
                                                                                                                                        Case -1
                                                                                                                                            Status.Content = "Failed To Installed Patch."
                                                                                                                                            '10 Zip Patch Fail
+
+                                                                                                                                           IsBusy = False
                                                                                                                                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(10)")
                                                                                                                                        Case 1
                                                                                                                                            Status.Content = "Success Installed Patch."
                                                                                                                                            '11 Success Zip Patch
+
+                                                                                                                                           IsBusy = False
                                                                                                                                            MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(11)")
                                                                                                                                    End Select
                                                                                                                                    Progress.Value = 100
-                                                                                                                                   IsBusy = False
+
                                                                                                                                End Sub)
                                                                                                          End Sub
                                                                       Catch ex2 As Exception
@@ -564,8 +579,8 @@ Class MainWindow
                                                                           Progress.Value = 100
                                                                           Status.Content = "Permission Denied."
                                                                           '13 Zip Patch Permission Denied
-                                                                          MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(13)")
                                                                           IsBusy = False
+                                                                          MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(13)")
                                                                       End Try
                                                                   End If
                                                               End Try
@@ -583,10 +598,10 @@ Class MainWindow
                                                             End Sub)
         AddHandler DownloadClient.DownloadFileCompleted, (Sub()
                                                               '15 Download Success Without Verification
+                                                              IsBusy = False
                                                               MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(15)")
                                                               Status.Content = "Download Patch Success."
                                                               Progress.Value = 100
-                                                              IsBusy = False
                                                           End Sub)
         DownloadClient.DownloadFileAsync(New Uri(link), name)
     End Sub
@@ -605,16 +620,16 @@ Class MainWindow
                                                                       Try
                                                                           RunProc = Process.Start(name, argu)
                                                                           '16 Download And Run Success 
+                                                                          IsBusy = False
                                                                           MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(16)")
                                                                           Status.Content = "Run Patch Success."
                                                                           Progress.Value = 100
-                                                                          IsBusy = False
                                                                       Catch ex As Exception
                                                                           '18 Run Fail
+                                                                          IsBusy = False
                                                                           MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(18)")
                                                                           Status.Content = "Failed To Run Patch."
                                                                           Progress.Value = 100
-                                                                          IsBusy = False
                                                                       End Try
                                                                   Case "Admin"
                                                                       Dim info As New ProcessStartInfo(name, argu) With {
@@ -625,8 +640,8 @@ Class MainWindow
                                                                           RunProc = Process.Start(info)
                                                                           Status.Content = "Run Patch Success."
                                                                           '16 Download And Run Success 
-                                                                          MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(16)")
                                                                           IsBusy = False
+                                                                          MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(16)")
                                                                       Catch ex As Exception
                                                                           MsgBox("Need administrator permission to run service.",, "Error")
                                                                           Status.Content = "Administrator Permission Denied."
@@ -676,17 +691,18 @@ Class MainWindow
             'MsgBox(result)
             Status.Content = "Verify Success."
             '81 Verify Finish
+            IsBusy = False
             Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(81)")
             Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('" + result + "')")
         Else
             '80 No File
+            IsBusy = False
             Status.Content = "Cannot Found File To Verify."
             Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgStatus(80)")
             Await MainWeb.CoreWebView2.ExecuteScriptAsync("Ephedrine.msgResult('')")
         End If
         Progress.IsIndeterminate = False
         Progress.Value = 100
-        IsBusy = False
     End Sub
 
 
