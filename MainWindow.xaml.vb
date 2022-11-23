@@ -89,10 +89,10 @@ Class MainWindow
         Progress.Value = 10
         MainWeb.CoreWebView2.Settings.IsStatusBarEnabled = False
         MainWeb.CoreWebView2.Settings.IsBuiltInErrorPageEnabled = False
-        MainWeb.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = False
         MainWeb.CoreWebView2.Settings.AreDefaultContextMenusEnabled = InternalConfig.EnableContextMenu
         If Not InternalConfig.Devtool = "Always" And Not InternalConfig.Devtool = Command() Then
-            MainWeb.CoreWebView2.Settings.AreDevToolsEnabled = False
+            MainWeb.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = False
+            MainWeb.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = False
         End If
         If InternalConfig.StartPage = "Internal" Then
             Dim reader As StreamReader = New StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("WebModInstaller.index.html"))
