@@ -101,6 +101,12 @@ Class MainWindow
         Else
             MainWeb.CoreWebView2.Navigate(InternalConfig.StartPage)
         End If
+        AddHandler MainWeb.CoreWebView2.NewWindowRequested, Sub(sender1 As Object, e1 As CoreWebView2NewWindowRequestedEventArgs)
+                                                                e1.Handled = True
+                                                                Dim startInfo As New ProcessStartInfo(e1.Uri)
+                                                                startInfo.UseShellExecute = True
+                                                                Process.Start(startInfo)
+                                                            End Sub
     End Sub
 
     Private Sub ReadConfig()
@@ -139,7 +145,9 @@ Class MainWindow
         If Not e.Uri.StartsWith("data") Then
             If InternalConfig.EnableWhitelist And Not InternalConfig.Whitelist.Contains(New Uri(e.Uri).DnsSafeHost) Then
                 e.Cancel = True
-                Interaction.Shell("cmd.exe /c start " + e.Uri + " & exit", AppWinStyle.Hide)
+                Dim startInfo As New ProcessStartInfo(e.Uri)
+                startInfo.UseShellExecute = True
+                Process.Start(startInfo)
             End If
         End If
         Progress.Value = 10
